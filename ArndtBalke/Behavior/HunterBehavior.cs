@@ -19,10 +19,10 @@ namespace AntMe.Player.ArndtBalke.Behavior
         #region Constructor
 
         /// <summary>
-        /// Base constructor for all behaviors.
+        /// Creates a new instance of hunter behavior.
         /// </summary>
         /// <param name="ant">The ant to be controlled.</param>
-        internal HunterBehavior(BaseAnt ant)
+        public HunterBehavior(ArndtBalkeClass ant)
             : base(ant)
         { }
 

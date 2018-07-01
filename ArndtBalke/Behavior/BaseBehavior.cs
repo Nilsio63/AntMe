@@ -12,7 +12,7 @@ namespace AntMe.Player.ArndtBalke.Behavior
         /// <summary>
         /// The ant to be controlled.
         /// </summary>
-        protected readonly BaseAnt _ant;
+        protected readonly ArndtBalkeClass _ant;
 
         #endregion
 
@@ -31,7 +31,7 @@ namespace AntMe.Player.ArndtBalke.Behavior
         /// Base constructor for all behaviors.
         /// </summary>
         /// <param name="ant">The ant to be controlled.</param>
-        protected BaseBehavior(BaseAnt ant)
+        protected BaseBehavior(ArndtBalkeClass ant)
         {
             // Save ant reference
             _ant = ant;

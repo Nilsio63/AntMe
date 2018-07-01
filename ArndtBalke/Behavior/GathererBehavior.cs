@@ -19,10 +19,10 @@ namespace AntMe.Player.ArndtBalke.Behavior
         #region Constructor
 
         /// <summary>
-        /// Base constructor for all behaviors.
+        /// Creates a new instance of gatherer behavior.
         /// </summary>
         /// <param name="ant">The ant to be controlled.</param>
-        internal GathererBehavior(BaseAnt ant)
+        public GathererBehavior(ArndtBalkeClass ant)
             : base(ant)
         { }
 

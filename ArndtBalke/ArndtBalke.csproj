@@ -52,6 +52,8 @@
     <Compile Include="Behavior\BaseBehavior.cs" />
     <Compile Include="Behavior\GathererBehavior.cs" />
     <Compile Include="Behavior\HunterBehavior.cs" />
+    <Compile Include="MarkerInfo\InfoType.cs" />
+    <Compile Include="MarkerInfo\MarkerInformation.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ArndtBalkeClass.cs" />
   </ItemGroup>
