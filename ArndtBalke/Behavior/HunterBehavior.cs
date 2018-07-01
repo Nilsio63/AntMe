@@ -1,8 +1,4 @@
 ﻿using AntMe.English;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace AntMe.Player.ArndtBalke.Behavior
 {
@@ -41,6 +37,7 @@ namespace AntMe.Player.ArndtBalke.Behavior
         /// </summary>
         public override void Waiting()
         {
+            _ant.GoForward();
         }
 
         /// <summary>
@@ -167,6 +164,7 @@ namespace AntMe.Player.ArndtBalke.Behavior
         /// <param name="ant">spotted ant</param>
         public override void SpotsEnemy(Ant ant)
         {
+            _ant.Attack(ant);
         }
 
         /// <summary>
@@ -177,6 +175,10 @@ namespace AntMe.Player.ArndtBalke.Behavior
         /// <param name="bug">spotted bug</param>
         public override void SpotsEnemy(Bug bug)
         {
+            if (_ant.Destination == null)
+            {
+                _ant.Attack(bug);
+            }
         }
 
         /// <summary>
@@ -187,6 +189,7 @@ namespace AntMe.Player.ArndtBalke.Behavior
         /// <param name="ant">attacking ant</param>
         public override void UnderAttack(Ant ant)
         {
+            _ant.Attack(ant);
         }
 
         /// <summary>
@@ -197,6 +200,7 @@ namespace AntMe.Player.ArndtBalke.Behavior
         /// <param name="bug">attacking bug</param>
         public override void UnderAttack(Bug bug)
         {
+            _ant.Attack(bug);
         }
 
         #endregion

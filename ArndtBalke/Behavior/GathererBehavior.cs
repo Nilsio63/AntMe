@@ -37,6 +37,7 @@ namespace AntMe.Player.ArndtBalke.Behavior
         /// </summary>
         public override void Waiting()
         {
+            _ant.GoForward();
         }
 
         /// <summary>
@@ -80,6 +81,10 @@ namespace AntMe.Player.ArndtBalke.Behavior
         /// <param name="fruit">spotted fruit</param>
         public override void Spots(Fruit fruit)
         {
+            if (_ant.Destination == null)
+            {
+                _ant.GoToDestination(fruit);
+            }
         }
 
         /// <summary>
@@ -90,6 +95,10 @@ namespace AntMe.Player.ArndtBalke.Behavior
         /// <param name="sugar">spotted sugar</param>
         public override void Spots(Sugar sugar)
         {
+            if (_ant.CarryingFruit == null && _ant.CurrentLoad < _ant.MaximumLoad)
+            {
+                _ant.GoToDestination(sugar);
+            }
         }
 
         /// <summary>
@@ -101,6 +110,8 @@ namespace AntMe.Player.ArndtBalke.Behavior
         /// <param name="fruit">reached fruit</param>
         public override void DestinationReached(Fruit fruit)
         {
+            _ant.Take(fruit);
+            _ant.GoToAnthill();
         }
 
         /// <summary>
@@ -112,6 +123,8 @@ namespace AntMe.Player.ArndtBalke.Behavior
         /// <param name="sugar">reached sugar</param>
         public override void DestinationReached(Sugar sugar)
         {
+            _ant.Take(sugar);
+            _ant.GoToAnthill();
         }
 
         #endregion
