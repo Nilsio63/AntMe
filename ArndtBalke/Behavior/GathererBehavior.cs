@@ -3,25 +3,16 @@
 namespace AntMe.Player.ArndtBalke.Behavior
 {
     /// <summary>
-    /// Abstract class for ant behavior.
+    /// Behavior for gatherer ants.
     /// </summary>
-    internal abstract class BaseBehavior
+    internal class GathererBehavior : BaseBehavior
     {
-        #region Fields
-
-        /// <summary>
-        /// The ant to be controlled.
-        /// </summary>
-        protected readonly BaseAnt _ant;
-
-        #endregion
-
         #region Properties
 
         /// <summary>
         /// The caste name for this behavior.
         /// </summary>
-        public abstract string Caste { get; }
+        public override string Caste => "Gatherer";
 
         #endregion
 
@@ -31,11 +22,9 @@ namespace AntMe.Player.ArndtBalke.Behavior
         /// Base constructor for all behaviors.
         /// </summary>
         /// <param name="ant">The ant to be controlled.</param>
-        protected BaseBehavior(BaseAnt ant)
-        {
-            // Save ant reference
-            _ant = ant;
-        }
+        internal GathererBehavior(BaseAnt ant)
+            : base(ant)
+        { }
 
         #endregion
 
@@ -46,14 +35,18 @@ namespace AntMe.Player.ArndtBalke.Behavior
         /// is called to inform you that it is waiting.
         /// Read more: "http://wiki.antme.net/en/API1:Waiting"
         /// </summary>
-        public abstract void Waiting();
+        public override void Waiting()
+        {
+        }
 
         /// <summary>
         /// This method is called when an ant has travelled one third of its 
         /// movement range.
         /// Read more: "http://wiki.antme.net/en/API1:GettingTired"
         /// </summary>
-        public abstract void GettingTired();
+        public override void GettingTired()
+        {
+        }
 
         /// <summary>
         /// This method is called if an ant dies. It informs you that the ant has 
@@ -61,7 +54,9 @@ namespace AntMe.Player.ArndtBalke.Behavior
         /// Read more: "http://wiki.antme.net/en/API1:HasDied"
         /// </summary>
         /// <param name="kindOfDeath">Kind of Death</param>
-        public abstract void HasDied(KindOfDeath kindOfDeath);
+        public override void HasDied(KindOfDeath kindOfDeath)
+        {
+        }
 
         /// <summary>
         /// This method is called in every simulation round, regardless of additional 
@@ -69,7 +64,9 @@ namespace AntMe.Player.ArndtBalke.Behavior
         /// addressed by other methods.
         /// Read more: "http://wiki.antme.net/en/API1:Tick"
         /// </summary>
-        public abstract void Tick();
+        public override void Tick()
+        {
+        }
 
         #endregion
 
@@ -81,7 +78,9 @@ namespace AntMe.Player.ArndtBalke.Behavior
         /// Read more: "http://wiki.antme.net/en/API1:Spots(Fruit)"
         /// </summary>
         /// <param name="fruit">spotted fruit</param>
-        public abstract void Spots(Fruit fruit);
+        public override void Spots(Fruit fruit)
+        {
+        }
 
         /// <summary>
         /// This method is called as soon as an ant sees a mound of sugar in its 360° 
@@ -89,7 +88,9 @@ namespace AntMe.Player.ArndtBalke.Behavior
         /// Read more: "http://wiki.antme.net/en/API1:Spots(Sugar)"
         /// </summary>
         /// <param name="sugar">spotted sugar</param>
-        public abstract void Spots(Sugar sugar);
+        public override void Spots(Sugar sugar)
+        {
+        }
 
         /// <summary>
         /// If the ant’s destination is a piece of fruit, this method is called as soon 
@@ -98,7 +99,9 @@ namespace AntMe.Player.ArndtBalke.Behavior
         /// Read more: "http://wiki.antme.net/en/API1:DestinationReached(Fruit)"
         /// </summary>
         /// <param name="fruit">reached fruit</param>
-        public abstract void DestinationReached(Fruit fruit);
+        public override void DestinationReached(Fruit fruit)
+        {
+        }
 
         /// <summary>
         /// If the ant’s destination is a mound of sugar, this method is called as soon 
@@ -107,7 +110,9 @@ namespace AntMe.Player.ArndtBalke.Behavior
         /// Read more: "http://wiki.antme.net/en/API1:DestinationReached(Sugar)"
         /// </summary>
         /// <param name="sugar">reached sugar</param>
-        public abstract void DestinationReached(Sugar sugar);
+        public override void DestinationReached(Sugar sugar)
+        {
+        }
 
         #endregion
 
@@ -119,7 +124,9 @@ namespace AntMe.Player.ArndtBalke.Behavior
         /// Read more: "http://wiki.antme.net/en/API1:DetectedScentFriend(Marker)"
         /// </summary>
         /// <param name="marker">marker</param>
-        public abstract void DetectedScentFriend(Marker marker);
+        public override void DetectedScentFriend(Marker marker)
+        {
+        }
 
         /// <summary>
         /// Just as ants can see various types of food, they can also visually detect 
@@ -128,7 +135,9 @@ namespace AntMe.Player.ArndtBalke.Behavior
         /// Read more: "http://wiki.antme.net/en/API1:SpotsFriend(Ant)"
         /// </summary>
         /// <param name="ant">spotted ant</param>
-        public abstract void SpotsFriend(Ant ant);
+        public override void SpotsFriend(Ant ant)
+        {
+        }
 
         /// <summary>
         /// Just as ants can see various types of food, they can also visually detect 
@@ -137,7 +146,9 @@ namespace AntMe.Player.ArndtBalke.Behavior
         /// Read more: "http://wiki.antme.net/en/API1:SpotsTeammate(Ant)"
         /// </summary>
         /// <param name="ant">spotted ant</param>
-        public abstract void SpotsTeammate(Ant ant);
+        public override void SpotsTeammate(Ant ant)
+        {
+        }
 
         #endregion
 
@@ -150,7 +161,9 @@ namespace AntMe.Player.ArndtBalke.Behavior
         /// Read more: "http://wiki.antme.net/en/API1:SpotsEnemy(Ant)"
         /// </summary>
         /// <param name="ant">spotted ant</param>
-        public abstract void SpotsEnemy(Ant ant);
+        public override void SpotsEnemy(Ant ant)
+        {
+        }
 
         /// <summary>
         /// Just as ants can see various types of food, they can also visually detect 
@@ -158,7 +171,9 @@ namespace AntMe.Player.ArndtBalke.Behavior
         /// Read more: "http://wiki.antme.net/en/API1:SpotsEnemy(Bug)"
         /// </summary>
         /// <param name="bug">spotted bug</param>
-        public abstract void SpotsEnemy(Bug bug);
+        public override void SpotsEnemy(Bug bug)
+        {
+        }
 
         /// <summary>
         /// Enemy creatures may actively attack the ant. This method is called if an 
@@ -166,7 +181,9 @@ namespace AntMe.Player.ArndtBalke.Behavior
         /// Read more: "http://wiki.antme.net/en/API1:UnderAttack(Ant)"
         /// </summary>
         /// <param name="ant">attacking ant</param>
-        public abstract void UnderAttack(Ant ant);
+        public override void UnderAttack(Ant ant)
+        {
+        }
 
         /// <summary>
         /// Enemy creatures may actively attack the ant. This method is called if a 
@@ -174,7 +191,9 @@ namespace AntMe.Player.ArndtBalke.Behavior
         /// Read more: "http://wiki.antme.net/en/API1:UnderAttack(Bug)"
         /// </summary>
         /// <param name="bug">attacking bug</param>
-        public abstract void UnderAttack(Bug bug);
+        public override void UnderAttack(Bug bug)
+        {
+        }
 
         #endregion
 
