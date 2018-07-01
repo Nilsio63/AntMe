@@ -1,42 +1,64 @@
 ﻿using AntMe.Player.ArndtBalke.Map;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace AntMe.Player.ArndtBalke.MarkerInfo
 {
+    /// <summary>
+    /// Class to hold information for markers through bitwise integer operations.
+    /// </summary>
     internal class MarkerInformation
     {
+        /// <summary>
+        /// The type of information to be sent.
+        /// </summary>
         public InfoType InfoType { get; private set; }
+        /// <summary>
+        /// The coordinates of the original marker.
+        /// </summary>
         public RotationCoordinates Coordinates { get; private set; }
 
+        /// <summary>
+        /// Creates a new marker information instance.
+        /// </summary>
+        /// <param name="infoType">The type of information to be sent.</param>
+        /// <param name="coordinates">The coordinates where to find the object of interest.</param>
         public MarkerInformation(InfoType infoType, RotationCoordinates coordinates)
         {
             InfoType = infoType;
             Coordinates = coordinates;
         }
 
+        /// <summary>
+        /// Recreates a marker out of the encoded information.
+        /// </summary>
+        /// <param name="encoded">The encoded information integer.</param>
         public MarkerInformation(int encoded)
         {
+            // Decode info type from lowest 4 Bits
             InfoType = (InfoType)(encoded & 0xF);
 
+            // Decode coordinates from second highest to fifth lowest bit
             int coordinates = (encoded & 0x7FFFFFF0) >> 4;
             Coordinates = new RotationCoordinates(coordinates >> 9, coordinates & 0x1FF);
         }
 
+        /// <summary>
+        /// Encodes the given marker information of the instance.
+        /// </summary>
+        /// <returns>Returns the encoded integer.</returns>
         public int Encode()
         {
             int encoded = 0;
 
+            // Encode info type as 4 lowest bits
             encoded |= (int)InfoType & 0xF;
 
+            // Encode coordinate data
             int coordinates = 0;
-
             coordinates |= Coordinates.Distance << 9;
             coordinates |= Coordinates.Rotation & 0x1FF;
 
-            encoded |= coordinates << 4;
+            // Add encoded coordinate data to second highest to fifth lowest bit
+            encoded |= (coordinates << 4) & 0x7FFFFFF0;
 
             return encoded;
         }
