@@ -10,8 +10,6 @@
         SugarSpotted = 2,
         SugarEmpty = 3,
         FruitSpotted = 4,
-        FruitNeedsCarriers = 5,
-        FruitNeedsNoCarriers = 6
-
+        FruitNeedsCarriers = 5
     }
 }
