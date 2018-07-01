@@ -38,6 +38,11 @@ namespace AntMe.Player.ArndtBalke
         /// </summary>
         private BaseBehavior behavior;
 
+        /// <summary>
+        /// The ant's original anthill.
+        /// </summary>
+        private Anthill antHill;
+
         #endregion
 
         #region Caste
@@ -113,6 +118,14 @@ namespace AntMe.Player.ArndtBalke
         /// </summary>
         public override void Tick()
         {
+            // Search for anthill if not set
+            if (antHill == null)
+            {
+                GoToAnthill();
+                
+                antHill = Destination as Anthill;
+            }
+
             // Call behavior
             behavior.Tick();
         }
