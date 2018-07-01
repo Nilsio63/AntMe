@@ -11,8 +11,8 @@ namespace AntMe.Player.ArndtBalke
     )]
     [Caste(
         Name = "Gatherer",
-        AttackModifier = -2,
-        EnergyModifier = 0,
+        AttackModifier = -1,
+        EnergyModifier = -1,
         LoadModifier = 1,
         RangeModifier = 0,
         RotationSpeedModifier = 0,
@@ -23,11 +23,11 @@ namespace AntMe.Player.ArndtBalke
         Name = "Hunter",
         AttackModifier = 1,
         EnergyModifier = 1,
-        LoadModifier = -2,
-        RangeModifier = -2,
+        LoadModifier = -1,
+        RangeModifier = -1,
         RotationSpeedModifier = 0,
-        SpeedModifier = 1,
-        ViewRangeModifier = 1
+        SpeedModifier = 0,
+        ViewRangeModifier = 0
     )]
     public class ArndtBalkeClass : BaseAnt
     {
@@ -78,6 +78,8 @@ namespace AntMe.Player.ArndtBalke
         /// </summary>
         public override void Waiting()
         {
+            // Call behavior
+            behavior.Waiting();
         }
 
         /// <summary>
@@ -87,6 +89,8 @@ namespace AntMe.Player.ArndtBalke
         /// </summary>
         public override void GettingTired()
         {
+            // Call behavior
+            behavior.GettingTired();
         }
 
         /// <summary>
@@ -97,6 +101,8 @@ namespace AntMe.Player.ArndtBalke
         /// <param name="kindOfDeath">Kind of Death</param>
         public override void HasDied(KindOfDeath kindOfDeath)
         {
+            // Call behavior
+            behavior.HasDied(kindOfDeath);
         }
 
         /// <summary>
@@ -107,6 +113,8 @@ namespace AntMe.Player.ArndtBalke
         /// </summary>
         public override void Tick()
         {
+            // Call behavior
+            behavior.Tick();
         }
 
         #endregion
@@ -121,6 +129,8 @@ namespace AntMe.Player.ArndtBalke
         /// <param name="fruit">spotted fruit</param>
         public override void Spots(Fruit fruit)
         {
+            // Call behavior
+            behavior.Spots(fruit);
         }
 
         /// <summary>
@@ -131,6 +141,8 @@ namespace AntMe.Player.ArndtBalke
         /// <param name="sugar">spotted sugar</param>
         public override void Spots(Sugar sugar)
         {
+            // Call behavior
+            behavior.Spots(sugar);
         }
 
         /// <summary>
@@ -142,6 +154,8 @@ namespace AntMe.Player.ArndtBalke
         /// <param name="fruit">reached fruit</param>
         public override void DestinationReached(Fruit fruit)
         {
+            // Call behavior
+            behavior.DestinationReached(fruit);
         }
 
         /// <summary>
@@ -153,6 +167,8 @@ namespace AntMe.Player.ArndtBalke
         /// <param name="sugar">reached sugar</param>
         public override void DestinationReached(Sugar sugar)
         {
+            // Call behavior
+            behavior.DestinationReached(sugar);
         }
 
         #endregion
@@ -167,6 +183,8 @@ namespace AntMe.Player.ArndtBalke
         /// <param name="marker">marker</param>
         public override void DetectedScentFriend(Marker marker)
         {
+            // Call behavior
+            behavior.DetectedScentFriend(marker);
         }
 
         /// <summary>
@@ -178,6 +196,8 @@ namespace AntMe.Player.ArndtBalke
         /// <param name="ant">spotted ant</param>
         public override void SpotsFriend(Ant ant)
         {
+            // Call behavior
+            behavior.SpotsFriend(ant);
         }
 
         /// <summary>
@@ -189,6 +209,8 @@ namespace AntMe.Player.ArndtBalke
         /// <param name="ant">spotted ant</param>
         public override void SpotsTeammate(Ant ant)
         {
+            // Call behavior
+            behavior.SpotsTeammate(ant);
         }
 
         #endregion
@@ -204,6 +226,8 @@ namespace AntMe.Player.ArndtBalke
         /// <param name="ant">spotted ant</param>
         public override void SpotsEnemy(Ant ant)
         {
+            // Call behavior
+            behavior.SpotsEnemy(ant);
         }
 
         /// <summary>
@@ -214,6 +238,8 @@ namespace AntMe.Player.ArndtBalke
         /// <param name="bug">spotted bug</param>
         public override void SpotsEnemy(Bug bug)
         {
+            // Call behavior
+            behavior.SpotsEnemy(bug);
         }
 
         /// <summary>
@@ -224,6 +250,8 @@ namespace AntMe.Player.ArndtBalke
         /// <param name="ant">attacking ant</param>
         public override void UnderAttack(Ant ant)
         {
+            // Call behavior
+            behavior.UnderAttack(ant);
         }
 
         /// <summary>
@@ -234,6 +262,8 @@ namespace AntMe.Player.ArndtBalke
         /// <param name="bug">attacking bug</param>
         public override void UnderAttack(Bug bug)
         {
+            // Call behavior
+            behavior.UnderAttack(bug);
         }
 
         #endregion
