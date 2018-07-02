@@ -1,4 +1,5 @@
 ﻿using AntMe.English;
+using AntMe.Player.ArndtBalke.MarkerInfo;
 
 namespace AntMe.Player.ArndtBalke.Behavior
 {
@@ -71,52 +72,6 @@ namespace AntMe.Player.ArndtBalke.Behavior
 
         #endregion
 
-        #region Food
-
-        /// <summary>
-        /// This method is called as soon as an ant sees an apple within its 360° 
-        /// visual range. The parameter is the piece of fruit that the ant has spotted.
-        /// Read more: "http://wiki.antme.net/en/API1:Spots(Fruit)"
-        /// </summary>
-        /// <param name="fruit">spotted fruit</param>
-        public override void Spots(Fruit fruit)
-        {
-        }
-
-        /// <summary>
-        /// This method is called as soon as an ant sees a mound of sugar in its 360° 
-        /// visual range. The parameter is the mound of sugar that the ant has spotted.
-        /// Read more: "http://wiki.antme.net/en/API1:Spots(Sugar)"
-        /// </summary>
-        /// <param name="sugar">spotted sugar</param>
-        public override void Spots(Sugar sugar)
-        {
-        }
-
-        /// <summary>
-        /// If the ant’s destination is a piece of fruit, this method is called as soon 
-        /// as the ant reaches its destination. It means that the ant is now near enough 
-        /// to its destination/target to interact with it.
-        /// Read more: "http://wiki.antme.net/en/API1:DestinationReached(Fruit)"
-        /// </summary>
-        /// <param name="fruit">reached fruit</param>
-        public override void DestinationReached(Fruit fruit)
-        {
-        }
-
-        /// <summary>
-        /// If the ant’s destination is a mound of sugar, this method is called as soon 
-        /// as the ant has reached its destination. It means that the ant is now near 
-        /// enough to its destination/target to interact with it.
-        /// Read more: "http://wiki.antme.net/en/API1:DestinationReached(Sugar)"
-        /// </summary>
-        /// <param name="sugar">reached sugar</param>
-        public override void DestinationReached(Sugar sugar)
-        {
-        }
-
-        #endregion
-
         #region Communication
 
         /// <summary>
@@ -127,6 +82,17 @@ namespace AntMe.Player.ArndtBalke.Behavior
         /// <param name="marker">marker</param>
         public override void DetectedScentFriend(Marker marker)
         {
+            MarkerInformation information = new MarkerInformation(marker.Information);
+
+            switch (information.InfoType)
+            {
+                case InfoType.EnemyAntSpotted:
+                    if (_ant.Destination == null)
+                    {
+                        _ant.GoToDestination(marker);
+                    }
+                    break;
+            }
         }
 
         /// <summary>
@@ -164,6 +130,8 @@ namespace AntMe.Player.ArndtBalke.Behavior
         /// <param name="ant">spotted ant</param>
         public override void SpotsEnemy(Ant ant)
         {
+            base.SpotsEnemy(ant);
+
             _ant.Attack(ant);
         }
 
@@ -175,6 +143,8 @@ namespace AntMe.Player.ArndtBalke.Behavior
         /// <param name="bug">spotted bug</param>
         public override void SpotsEnemy(Bug bug)
         {
+            base.SpotsEnemy(bug);
+
             if (_ant.Destination == null)
             {
                 _ant.Attack(bug);

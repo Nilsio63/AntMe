@@ -20,6 +20,14 @@ namespace AntMe.Player.ArndtBalke.MarkerInfo
         /// Creates a new marker information instance.
         /// </summary>
         /// <param name="infoType">The type of information to be sent.</param>
+        public MarkerInformation(InfoType infoType)
+            : this(infoType, null)
+        { }
+
+        /// <summary>
+        /// Creates a new marker information instance.
+        /// </summary>
+        /// <param name="infoType">The type of information to be sent.</param>
         /// <param name="coordinates">The coordinates where to find the object of interest.</param>
         public MarkerInformation(InfoType infoType, RelativeCoordinate coordinates)
         {
@@ -54,8 +62,11 @@ namespace AntMe.Player.ArndtBalke.MarkerInfo
 
             // Encode coordinate data
             int coordinates = 0;
-            coordinates |= Coordinates.Distance << 9;
-            coordinates |= Coordinates.Rotation & 0x1FF;
+            if (Coordinates != null)
+            {
+                coordinates |= Coordinates.Distance << 9;
+                coordinates |= Coordinates.Rotation & 0x1FF;
+            }
 
             // Add encoded coordinate data to second highest to fifth lowest bit
             encoded |= (coordinates << 4) & 0x7FFFFFF0;

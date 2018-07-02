@@ -1,4 +1,7 @@
 ﻿using AntMe.English;
+using AntMe.Player.ArndtBalke.MarkerInfo;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace AntMe.Player.ArndtBalke.Behavior
 {
@@ -7,6 +10,8 @@ namespace AntMe.Player.ArndtBalke.Behavior
     /// </summary>
     internal class GathererBehavior : BaseBehavior
     {
+        private readonly List<Sugar> _listSugar = new List<Sugar>();
+
         #region Properties
 
         /// <summary>
@@ -37,6 +42,14 @@ namespace AntMe.Player.ArndtBalke.Behavior
         /// </summary>
         public override void Waiting()
         {
+            Sugar s = _listSugar.OrderBy(o => Coordinate.GetDistanceBetween(_ant, o)).FirstOrDefault();
+
+            if (s != null)
+            {
+                _ant.GoToDestination(s);
+                return;
+            }
+
             _ant.GoForward();
         }
 
@@ -67,6 +80,12 @@ namespace AntMe.Player.ArndtBalke.Behavior
         /// </summary>
         public override void Tick()
         {
+            _listSugar.RemoveAll(o => o.Amount <= 0);
+
+            if (_ant.CarryingFruit != null && _ant.NeedsCarrier(_ant.CarryingFruit))
+            {
+                _ant.MakeMark(new MarkerInformation(InfoType.FruitSpotted).Encode(), 75);
+            }
         }
 
         #endregion
@@ -81,9 +100,16 @@ namespace AntMe.Player.ArndtBalke.Behavior
         /// <param name="fruit">spotted fruit</param>
         public override void Spots(Fruit fruit)
         {
-            if (_ant.Destination == null)
+            base.Spots(fruit);
+
+            if (_ant.NeedsCarrier(fruit))
             {
-                _ant.GoToDestination(fruit);
+                _ant.MakeMark(new MarkerInformation(InfoType.FruitSpotted).Encode(), 75);
+
+                if (_ant.Destination == null || _ant.Destination is Marker)
+                {
+                    _ant.GoToDestination(fruit);
+                }
             }
         }
 
@@ -95,9 +121,17 @@ namespace AntMe.Player.ArndtBalke.Behavior
         /// <param name="sugar">spotted sugar</param>
         public override void Spots(Sugar sugar)
         {
+            base.Spots(sugar);
+
+            if (!_listSugar.Contains(sugar))
+                _listSugar.Add(sugar);
+
             if (_ant.CarryingFruit == null && _ant.CurrentLoad < _ant.MaximumLoad)
             {
-                _ant.GoToDestination(sugar);
+                if (_ant.Range - _ant.WalkedRange > _ant.DistanceToAnthill)
+                {
+                    _ant.GoToDestination(sugar);
+                }
             }
         }
 
@@ -110,8 +144,11 @@ namespace AntMe.Player.ArndtBalke.Behavior
         /// <param name="fruit">reached fruit</param>
         public override void DestinationReached(Fruit fruit)
         {
-            _ant.Take(fruit);
-            _ant.GoToAnthill();
+            if (_ant.NeedsCarrier(fruit))
+            {
+                _ant.Take(fruit);
+                _ant.GoToAnthill();
+            }
         }
 
         /// <summary>
@@ -139,6 +176,39 @@ namespace AntMe.Player.ArndtBalke.Behavior
         /// <param name="marker">marker</param>
         public override void DetectedScentFriend(Marker marker)
         {
+            MarkerInformation information = new MarkerInformation(marker.Information);
+
+            if (_ant.Destination != null)
+            {
+                if (_ant.Destination is Anthill)
+                {
+                    return;
+                }
+                else if (_ant.Destination is Sugar)
+                {
+
+                }
+                else if (_ant.DistanceToDestination < Coordinate.GetDistanceBetween(_ant, marker))
+                {
+                    return;
+                }
+            }
+
+            switch (information.InfoType)
+            {
+                case InfoType.FruitNeedsCarriers:
+                    if (!(_ant.Destination is Fruit) && _ant.CurrentLoad <= 0 && _ant.CarryingFruit == null)
+                    {
+                        _ant.GoToDestination(marker);
+                    }
+                    break;
+                case InfoType.SugarSpotted:
+                    if (!(_ant.Destination is Sugar) && _ant.CurrentLoad < _ant.MaximumLoad)
+                    {
+                        _ant.GoToDestination(marker);
+                    }
+                    break;
+            }
         }
 
         /// <summary>
@@ -166,27 +236,6 @@ namespace AntMe.Player.ArndtBalke.Behavior
         #endregion
 
         #region Fight
-
-        /// <summary>
-        /// Just as ants can see various types of food, they can also visually detect 
-        /// other game elements. This method is called if the ant detects an ant from an 
-        /// enemy colony.
-        /// Read more: "http://wiki.antme.net/en/API1:SpotsEnemy(Ant)"
-        /// </summary>
-        /// <param name="ant">spotted ant</param>
-        public override void SpotsEnemy(Ant ant)
-        {
-        }
-
-        /// <summary>
-        /// Just as ants can see various types of food, they can also visually detect 
-        /// other game elements. This method is called if the ant sees a bug.
-        /// Read more: "http://wiki.antme.net/en/API1:SpotsEnemy(Bug)"
-        /// </summary>
-        /// <param name="bug">spotted bug</param>
-        public override void SpotsEnemy(Bug bug)
-        {
-        }
 
         /// <summary>
         /// Enemy creatures may actively attack the ant. This method is called if an 

@@ -1,4 +1,5 @@
 ﻿using AntMe.English;
+using AntMe.Player.ArndtBalke.MarkerInfo;
 
 namespace AntMe.Player.ArndtBalke.Behavior
 {
@@ -91,6 +92,10 @@ namespace AntMe.Player.ArndtBalke.Behavior
         /// <param name="fruit">spotted fruit</param>
         public virtual void Spots(Fruit fruit)
         {
+            if (_ant.NeedsCarrier(fruit))
+            {
+                _ant.MakeMark(new MarkerInformation(InfoType.FruitSpotted).Encode(), 100);
+            }
         }
 
         /// <summary>
@@ -101,6 +106,10 @@ namespace AntMe.Player.ArndtBalke.Behavior
         /// <param name="sugar">spotted sugar</param>
         public virtual void Spots(Sugar sugar)
         {
+            if (sugar.Amount > _ant.MaximumLoad * 4)
+            {
+                _ant.MakeMark(new MarkerInformation(InfoType.SugarSpotted).Encode(), 75);
+            }
         }
 
         /// <summary>
@@ -174,6 +183,7 @@ namespace AntMe.Player.ArndtBalke.Behavior
         /// <param name="ant">spotted ant</param>
         public virtual void SpotsEnemy(Ant ant)
         {
+            _ant.MakeMark(new MarkerInformation(InfoType.EnemyAntSpotted).Encode(), 75);
         }
 
         /// <summary>
@@ -184,6 +194,7 @@ namespace AntMe.Player.ArndtBalke.Behavior
         /// <param name="bug">spotted bug</param>
         public virtual void SpotsEnemy(Bug bug)
         {
+            _ant.MakeMark(new MarkerInformation(InfoType.BugSpotted).Encode(), 75);
         }
 
         /// <summary>

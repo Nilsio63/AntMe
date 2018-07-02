@@ -8,8 +8,7 @@
         BugSpotted = 0,
         EnemyAntSpotted = 1,
         SugarSpotted = 2,
-        SugarEmpty = 3,
-        FruitSpotted = 4,
-        FruitNeedsCarriers = 5
+        FruitSpotted = 3,
+        FruitNeedsCarriers = 4
     }
 }
