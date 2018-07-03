@@ -47,7 +47,7 @@ namespace AntMe.Player.ArndtBalke.Behavior
 
             if (s != null)
             {
-                _ant.GoToDestination(s);
+                GoTo(s);
                 return;
             }
 
@@ -113,7 +113,7 @@ namespace AntMe.Player.ArndtBalke.Behavior
 
                 if (_ant.Destination == null || _ant.Destination is Marker)
                 {
-                    _ant.GoToDestination(fruit);
+                    GoTo(fruit);
                 }
             }
         }
@@ -135,7 +135,7 @@ namespace AntMe.Player.ArndtBalke.Behavior
             {
                 if (_ant.Range - _ant.WalkedRange > _ant.DistanceToAnthill)
                 {
-                    _ant.GoToDestination(sugar);
+                    GoTo(sugar);
                 }
             }
         }
@@ -152,7 +152,7 @@ namespace AntMe.Player.ArndtBalke.Behavior
             if (_ant.NeedsCarrier(fruit))
             {
                 _ant.Take(fruit);
-                _ant.GoToAnthill();
+                GoToAnthill();
             }
         }
 
@@ -166,7 +166,7 @@ namespace AntMe.Player.ArndtBalke.Behavior
         public override void DestinationReached(Sugar sugar)
         {
             _ant.Take(sugar);
-            _ant.GoToAnthill();
+            GoToAnthill();
         }
 
         #endregion
@@ -188,19 +188,19 @@ namespace AntMe.Player.ArndtBalke.Behavior
             return false;
         }
 
-        protected override void OnSugarSpotted(MarkerInformation markerInfo, Action goToMarker)
+        protected override void OnSugarSpotted(MarkerInformation markerInfo)
         {
             if (!(_ant.Destination is Sugar) && _ant.CurrentLoad < _ant.MaximumLoad)
             {
-                goToMarker();
+                GoTo(markerInfo);
             }
         }
 
-        protected override void OnFruitNeedsCarriers(MarkerInformation markerInfo, Action goToMarker)
+        protected override void OnFruitNeedsCarriers(MarkerInformation markerInfo)
         {
             if (!(_ant.Destination is Fruit) && _ant.CurrentLoad <= 0 && _ant.CarryingFruit == null)
             {
-                goToMarker();
+                GoTo(markerInfo);
             }
         }
 

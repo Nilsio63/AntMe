@@ -6,23 +6,23 @@
     public class RelativeCoordinate
     {
         /// <summary>
-        /// The distance between the object and the relation.
+        /// The X coordinate relative to the anthill.
         /// </summary>
-        public int Distance { get; private set; }
+        public int X { get; private set; }
         /// <summary>
-        /// The rotational degree between the object and the relation.
+        /// The Y coordinate relative to the anthill.
         /// </summary>
-        public int Rotation { get; private set; }
+        public int Y { get; private set; }
 
         /// <summary>
         /// Creates a new coordinate instance.
         /// </summary>
-        /// <param name="distance">The distance to the relation.</param>
-        /// <param name="rotation">The rotation to the relation.</param>
-        public RelativeCoordinate(int distance, int rotation)
+        /// <param name="x">The X coordinate relative to the anthill.</param>
+        /// <param name="y">The Y coordinate relative to the anthill.</param>
+        public RelativeCoordinate(int x, int y)
         {
-            Distance = distance < 0 ? 0 : distance;
-            Rotation = rotation < 0 ? rotation + 360 : rotation;
+            X = x;
+            Y = y;
         }
 
     }

@@ -1,5 +1,7 @@
 using AntMe.English;
 using AntMe.Player.ArndtBalke.Behavior;
+using AntMe.Player.ArndtBalke.Map;
+using System;
 using System.Collections.Generic;
 using System.Reflection;
 
@@ -57,8 +59,9 @@ namespace AntMe.Player.ArndtBalke
         /// <returns>Caste-Name for the next ant</returns>
         public override string ChooseCaste(Dictionary<string, int> typeCount)
         {
-            // Check hunter and gatherer count
-            if (typeCount["Hunter"] < typeCount["Gatherer"])
+            // Check caste counts
+            //if (typeCount["Hunter"] < typeCount["Gatherer"])
+            if (typeCount["Gatherer"] > 0)
             {
                 // Create hunter behavior
                 behavior = new HunterBehavior(this);
@@ -129,6 +132,44 @@ namespace AntMe.Player.ArndtBalke
 
             // Call behavior
             behavior.Tick();
+        }
+
+        public RelativeCoordinate GetCoordinate(Item item)
+        {
+            double distance = Coordinate.GetDistanceBetween(antHill, item);
+            double degrees = Coordinate.GetDegreesBetween(antHill, item);
+
+            return GetCoordinateByDegrees(distance, degrees);
+        }
+
+        public RelativeCoordinate GetCoordinate()
+        {
+            double distance = Coordinate.GetDistanceBetween(antHill, this);
+            double degrees = Coordinate.GetDegreesBetween(antHill, this);
+
+            return GetCoordinateByDegrees(distance, degrees);
+        }
+
+        private RelativeCoordinate GetCoordinateByDegrees(double distance, double degrees)
+        {
+            double x = Math.Cos(degrees * Math.PI / 180) * distance;
+            double y = Math.Sin(degrees * Math.PI / 180) * distance;
+
+            return new RelativeCoordinate((int)x, (int)y);
+        }
+
+        public void GoTo(RelativeCoordinate coordinate)
+        {
+            RelativeCoordinate ownCoordinate = GetCoordinate();
+
+            int x = ownCoordinate.X - coordinate.X;
+            int y = ownCoordinate.Y - coordinate.Y;
+
+            double distance = Math.Sqrt(Math.Pow(x, 2) + Math.Pow(y, 2));
+            double degree = Math.Asin(y / distance) * 180 / Math.PI;
+
+            TurnToDirection((int)degree);
+            GoForward((int)distance);
         }
 
         #endregion

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using AntMe.English;
 using AntMe.Player.ArndtBalke.MarkerInfo;
 
@@ -75,11 +76,11 @@ namespace AntMe.Player.ArndtBalke.Behavior
 
         #region Communication
 
-        protected override void OnEnemyAntSpotted(MarkerInformation markerInfo, Action goToMarker)
+        protected override void OnEnemyAntSpotted(MarkerInformation markerInfo)
         {
             if (_ant.Destination == null)
             {
-                goToMarker();
+                GoTo(markerInfo);
             }
         }
 

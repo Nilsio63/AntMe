@@ -81,6 +81,21 @@ namespace AntMe.Player.ArndtBalke.Behavior
         {
         }
 
+        protected void GoToAnthill()
+        {
+            _ant.GoToAnthill();
+        }
+
+        protected void GoTo(Item item)
+        {
+            _ant.GoToDestination(item);
+        }
+
+        protected void GoTo(MarkerInformation markerInfo)
+        {
+            _ant.GoTo(markerInfo.Coordinates);
+        }
+
         #endregion
 
         #region Food
@@ -152,24 +167,19 @@ namespace AntMe.Player.ArndtBalke.Behavior
             if (IgnoreMarker(marker))
                 return;
 
-            Action goToMarker = () =>
-            {
-                _ant.GoToDestination(marker);
-            };
-
             switch (markerInfo.InfoType)
             {
                 case 0:
-                    OnBugSpotted(markerInfo, goToMarker);
+                    OnBugSpotted(markerInfo);
                     break;
                 case 1:
-                    OnEnemyAntSpotted(markerInfo, goToMarker);
+                    OnEnemyAntSpotted(markerInfo);
                     break;
                 case 2:
-                    OnSugarSpotted(markerInfo, goToMarker);
+                    OnSugarSpotted(markerInfo);
                     break;
                 case 3:
-                    OnFruitNeedsCarriers(markerInfo, goToMarker);
+                    OnFruitNeedsCarriers(markerInfo);
                     break;
             }
         }
@@ -179,22 +189,22 @@ namespace AntMe.Player.ArndtBalke.Behavior
             return false;
         }
 
-        protected virtual void OnBugSpotted(MarkerInformation markerInfo, Action goToMarker)
+        protected virtual void OnBugSpotted(MarkerInformation markerInfo)
         {
 
         }
 
-        protected virtual void OnEnemyAntSpotted(MarkerInformation markerInfo, Action goToMarker)
+        protected virtual void OnEnemyAntSpotted(MarkerInformation markerInfo)
         {
 
         }
 
-        protected virtual void OnSugarSpotted(MarkerInformation markerInfo, Action goToMarker)
+        protected virtual void OnSugarSpotted(MarkerInformation markerInfo)
         {
 
         }
 
-        protected virtual void OnFruitNeedsCarriers(MarkerInformation markerInfo, Action goToMarker)
+        protected virtual void OnFruitNeedsCarriers(MarkerInformation markerInfo)
         {
 
         }

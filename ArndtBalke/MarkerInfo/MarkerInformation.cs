@@ -1,4 +1,5 @@
 ﻿using AntMe.Player.ArndtBalke.Map;
+using System;
 
 namespace AntMe.Player.ArndtBalke.MarkerInfo
 {
@@ -46,7 +47,7 @@ namespace AntMe.Player.ArndtBalke.MarkerInfo
 
             // Decode coordinates from second highest to fifth lowest bit
             int coordinates = (encoded & 0x7FFFFFF0) >> 4;
-            Coordinates = new RelativeCoordinate(coordinates >> 9, coordinates & 0x1FF);
+            Coordinates = new RelativeCoordinate(GetInt32(coordinates >> 13), GetInt32(coordinates & 0x1FFF));
         }
 
         /// <summary>
@@ -64,14 +65,46 @@ namespace AntMe.Player.ArndtBalke.MarkerInfo
             int coordinates = 0;
             if (Coordinates != null)
             {
-                coordinates |= Coordinates.Distance << 9;
-                coordinates |= Coordinates.Rotation & 0x1FF;
+                coordinates |= GetInt13(Coordinates.X) << 13;
+                coordinates |= GetInt13(Coordinates.Y) & 0x1FFF;
             }
 
             // Add encoded coordinate data to second highest to fifth lowest bit
             encoded |= (coordinates << 4) & 0x7FFFFFF0;
 
             return encoded;
+        }
+
+        private int GetInt13(int int32)
+        {
+            int res = Math.Abs(int32) & 0xFFF;
+
+            System.Diagnostics.Trace.WriteLine(Convert.ToString(int32, 2));
+            System.Diagnostics.Trace.WriteLine(Convert.ToString(res, 2));
+
+            if (int32 < 0)
+            {
+                res |= 1 << 12;
+            }
+
+            System.Diagnostics.Trace.WriteLine(Convert.ToString(res, 2));
+
+            return res;
+        }
+
+        private int GetInt32(int int13)
+        {
+            int value = int13 & 0xFFF;
+            int sign = int13 >> 12;
+
+            if (sign == 1)
+                value = -value;
+
+            System.Diagnostics.Trace.WriteLine(Convert.ToString(int13, 2));
+            System.Diagnostics.Trace.WriteLine(Convert.ToString(value, 2));
+            System.Diagnostics.Trace.WriteLine(Convert.ToString(sign, 2));
+
+            return value;
         }
 
     }
