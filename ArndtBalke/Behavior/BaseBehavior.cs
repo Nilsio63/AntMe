@@ -1,4 +1,5 @@
 ﻿using AntMe.English;
+using AntMe.Player.ArndtBalke.Map;
 using AntMe.Player.ArndtBalke.MarkerInfo;
 using System;
 
@@ -164,7 +165,9 @@ namespace AntMe.Player.ArndtBalke.Behavior
         {
             MarkerInformation markerInfo = new MarkerInformation(marker.Information);
 
-            if (IgnoreMarker(marker))
+            MakeMark(markerInfo);
+
+            if (IgnoreMarker(markerInfo))
                 return;
 
             switch (markerInfo.InfoType)
@@ -184,7 +187,7 @@ namespace AntMe.Player.ArndtBalke.Behavior
             }
         }
 
-        protected virtual bool IgnoreMarker(Marker marker)
+        protected virtual bool IgnoreMarker(MarkerInformation markerInfo)
         {
             return false;
         }
@@ -209,29 +212,37 @@ namespace AntMe.Player.ArndtBalke.Behavior
 
         }
 
-        private void MakeMark(byte infoType, int range)
+        protected void MakeMark(byte infoType, RelativeCoordinate coordinate, int range)
         {
-            _ant.MakeMark(new MarkerInformation(infoType).Encode(), range);
+            _ant.MakeMark(new MarkerInformation(infoType, coordinate).Encode(), range);
+        }
+
+        private void MakeMark(MarkerInformation markerInfo)
+        {
+            if (markerInfo.HopCount < 4 && markerInfo.Coordinates != null)
+            {
+                _ant.MakeMark(new MarkerInformation(markerInfo).Encode(), 75);
+            }
         }
 
         protected virtual void MarkBugSpotted(Bug bug)
         {
-            MakeMark(0, 75);
+            MakeMark(0, _ant.GetCoordinate(bug), 75);
         }
 
         protected virtual void MarkEnemyAntSpotted(Ant ant)
         {
-            MakeMark(1, 75);
+            MakeMark(1, _ant.GetCoordinate(ant), 75);
         }
 
         protected virtual void MarkSugarSpotted(Sugar sugar)
         {
-            MakeMark(2, 50);
+            MakeMark(2, _ant.GetCoordinate(sugar), 50);
         }
 
         protected virtual void MarkFruitNeedsCarriers(Fruit fruit)
         {
-            MakeMark(3, 200);
+            MakeMark(3, _ant.GetCoordinate(fruit), 200);
         }
 
         /// <summary>

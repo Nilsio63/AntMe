@@ -38,7 +38,13 @@ namespace AntMe.Player.ArndtBalke.MarkerInfo
         {
             InfoType = infoType;
             Coordinates = coordinates;
-            HopCount = 3;
+        }
+
+        public MarkerInformation(MarkerInformation markerInfo)
+        {
+            InfoType = markerInfo.InfoType;
+            Coordinates = markerInfo.Coordinates;
+            HopCount = (short)(markerInfo.HopCount + 1);
         }
 
         /// <summary>
@@ -51,8 +57,11 @@ namespace AntMe.Player.ArndtBalke.MarkerInfo
             InfoType = (byte)(encoded & 0xF);
 
             // Decode coordinates from third highest to fifth lowest bit
-            int coordinates = (encoded & 0x7FFFFFF0) >> 4;
-            Coordinates = new RelativeCoordinate(GetInt32(coordinates >> 13), GetInt32(coordinates & 0x1FFF));
+            int coordinates = (encoded & 0x3FFFFFF0) >> 4;
+            if (coordinates == 0)
+                Coordinates = null;
+            else
+                Coordinates = new RelativeCoordinate(GetInt32(coordinates >> 13), GetInt32(coordinates & 0x1FFF));
 
             // Decode hop count from two highest bits
             HopCount = (short)((encoded >> 30) & 0x3);

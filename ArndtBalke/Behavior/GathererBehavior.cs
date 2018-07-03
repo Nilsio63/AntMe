@@ -111,7 +111,7 @@ namespace AntMe.Player.ArndtBalke.Behavior
             {
                 MarkFruitNeedsCarriers(fruit);
 
-                if (_ant.Destination == null || _ant.Destination is Marker)
+                if (_ant.Destination == null || _ant.Destination is Sugar || _ant.Destination is Marker)
                 {
                     GoTo(fruit);
                 }
@@ -173,7 +173,7 @@ namespace AntMe.Player.ArndtBalke.Behavior
 
         #region Communication
 
-        protected override bool IgnoreMarker(Marker marker)
+        protected override bool IgnoreMarker(MarkerInformation markerInfo)
         {
             if (_ant.Destination == null)
             {
@@ -181,7 +181,7 @@ namespace AntMe.Player.ArndtBalke.Behavior
                     return true;
                 else if (_ant.Destination is Sugar)
                     return false;
-                else if (_ant.DistanceToDestination < Coordinate.GetDistanceBetween(_ant, marker))
+                else if (_ant.DistanceToDestination < _ant.GetDistanceTo(markerInfo.Coordinates))
                     return true;
             }
 

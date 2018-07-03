@@ -58,17 +58,20 @@ namespace AntMe.Player.ArndtBalke
         /// <returns>Caste-Name for the next ant</returns>
         public override string ChooseCaste(Dictionary<string, int> typeCount)
         {
-            // Check caste counts
-            if (typeCount["Hunter"] < typeCount["Gatherer"])
-            {
-                // Create hunter behavior
-                behavior = new HunterBehavior(this);
-            }
-            else
-            {
-                // Create gatherer behavior
-                behavior = new GathererBehavior(this);
-            }
+            //// Check caste counts
+            //if (typeCount["Hunter"] < typeCount["Gatherer"])
+            //{
+            //    // Create hunter behavior
+            //    behavior = new HunterBehavior(this);
+            //}
+            //else
+            //{
+            //    // Create gatherer behavior
+            //    behavior = new GathererBehavior(this);
+            //}
+
+            // Create gatherer behavior
+            behavior = new GathererBehavior(this);
 
             // Return Caste of behavior
             return behavior.Caste;
@@ -134,6 +137,9 @@ namespace AntMe.Player.ArndtBalke
 
         public RelativeCoordinate GetCoordinate(Item item)
         {
+            if (antHill == null)
+                return null;
+
             double distance = Coordinate.GetDistanceBetween(antHill, item);
             double degrees = Coordinate.GetDegreesBetween(antHill, item);
 
@@ -142,6 +148,9 @@ namespace AntMe.Player.ArndtBalke
 
         public RelativeCoordinate GetCoordinate()
         {
+            if (antHill == null)
+                return null;
+
             double distance = Coordinate.GetDistanceBetween(antHill, this);
             double degrees = Coordinate.GetDegreesBetween(antHill, this);
 
@@ -160,14 +169,40 @@ namespace AntMe.Player.ArndtBalke
         {
             RelativeCoordinate ownCoordinate = GetCoordinate();
 
+            if (coordinate == null || ownCoordinate == null)
+                return;
+
+            double x = coordinate.X - ownCoordinate.X;
+            double y = coordinate.Y - ownCoordinate.Y;
+
+            double distance = Math.Sqrt(Math.Pow(x, 2) + Math.Pow(y, 2));
+
+            if (distance == 0)
+                return;
+
+            double degree = Math.Atan(y / x) * 180 / Math.PI;
+            degree += 360;
+            if (x < 0 && y > 0 || x > 0 && y < 0)
+                degree += 180;
+            degree %= 360;
+
+            TurnToDirection((int)degree);
+            GoForward((int)distance);
+        }
+
+        public int GetDistanceTo(RelativeCoordinate coordinate)
+        {
+            RelativeCoordinate ownCoordinate = GetCoordinate();
+
+            if (coordinate == null || ownCoordinate == null)
+                return -1;
+
             int x = ownCoordinate.X - coordinate.X;
             int y = ownCoordinate.Y - coordinate.Y;
 
             double distance = Math.Sqrt(Math.Pow(x, 2) + Math.Pow(y, 2));
-            double degree = Math.Asin(y / distance) * 180 / Math.PI;
 
-            TurnToDirection((int)degree);
-            GoForward((int)distance);
+            return (int)distance;
         }
 
         #endregion
