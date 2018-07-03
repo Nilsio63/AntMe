@@ -1,4 +1,5 @@
-﻿using AntMe.English;
+﻿using System;
+using AntMe.English;
 using AntMe.Player.ArndtBalke.MarkerInfo;
 
 namespace AntMe.Player.ArndtBalke.Behavior
@@ -74,24 +75,11 @@ namespace AntMe.Player.ArndtBalke.Behavior
 
         #region Communication
 
-        /// <summary>
-        /// Friendly ants can detect markers left by other ants. This method is called 
-        /// when an ant smells a friendly marker for the first time.
-        /// Read more: "http://wiki.antme.net/en/API1:DetectedScentFriend(Marker)"
-        /// </summary>
-        /// <param name="marker">marker</param>
-        public override void DetectedScentFriend(Marker marker)
+        protected override void OnEnemyAntSpotted(MarkerInformation markerInfo, Action goToMarker)
         {
-            MarkerInformation information = new MarkerInformation(marker.Information);
-
-            switch (information.InfoType)
+            if (_ant.Destination == null)
             {
-                case InfoType.EnemyAntSpotted:
-                    if (_ant.Destination == null)
-                    {
-                        _ant.GoToDestination(marker);
-                    }
-                    break;
+                goToMarker();
             }
         }
 
@@ -132,7 +120,10 @@ namespace AntMe.Player.ArndtBalke.Behavior
         {
             base.SpotsEnemy(ant);
 
-            _ant.Attack(ant);
+            if (_ant.Destination == null)
+            {
+                _ant.Attack(ant);
+            }
         }
 
         /// <summary>
@@ -145,7 +136,7 @@ namespace AntMe.Player.ArndtBalke.Behavior
         {
             base.SpotsEnemy(bug);
 
-            if (_ant.Destination == null)
+            if (_ant.Destination == null && _ant.FriendlyAntsFromSameCasteInViewrange > 4)
             {
                 _ant.Attack(bug);
             }

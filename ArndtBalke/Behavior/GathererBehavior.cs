@@ -1,5 +1,6 @@
 ﻿using AntMe.English;
 using AntMe.Player.ArndtBalke.MarkerInfo;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -88,7 +89,7 @@ namespace AntMe.Player.ArndtBalke.Behavior
 
             if (_ant.CarryingFruit != null && _ant.NeedsCarrier(_ant.CarryingFruit))
             {
-                _ant.MakeMark(new MarkerInformation(InfoType.FruitSpotted).Encode(), 75);
+                MarkFruitNeedsCarriers(_ant.CarryingFruit);
             }
         }
 
@@ -108,7 +109,7 @@ namespace AntMe.Player.ArndtBalke.Behavior
 
             if (_ant.NeedsCarrier(fruit))
             {
-                _ant.MakeMark(new MarkerInformation(InfoType.FruitSpotted).Encode(), 75);
+                MarkFruitNeedsCarriers(fruit);
 
                 if (_ant.Destination == null || _ant.Destination is Marker)
                 {
@@ -172,46 +173,34 @@ namespace AntMe.Player.ArndtBalke.Behavior
 
         #region Communication
 
-        /// <summary>
-        /// Friendly ants can detect markers left by other ants. This method is called 
-        /// when an ant smells a friendly marker for the first time.
-        /// Read more: "http://wiki.antme.net/en/API1:DetectedScentFriend(Marker)"
-        /// </summary>
-        /// <param name="marker">marker</param>
-        public override void DetectedScentFriend(Marker marker)
+        protected override bool IgnoreMarker(Marker marker)
         {
-            MarkerInformation information = new MarkerInformation(marker.Information);
-
-            if (_ant.Destination != null)
+            if (_ant.Destination == null)
             {
                 if (_ant.Destination is Anthill)
-                {
-                    return;
-                }
+                    return true;
                 else if (_ant.Destination is Sugar)
-                {
-
-                }
+                    return false;
                 else if (_ant.DistanceToDestination < Coordinate.GetDistanceBetween(_ant, marker))
-                {
-                    return;
-                }
+                    return true;
             }
 
-            switch (information.InfoType)
+            return false;
+        }
+
+        protected override void OnSugarSpotted(MarkerInformation markerInfo, Action goToMarker)
+        {
+            if (!(_ant.Destination is Sugar) && _ant.CurrentLoad < _ant.MaximumLoad)
             {
-                case InfoType.FruitNeedsCarriers:
-                    if (!(_ant.Destination is Fruit) && _ant.CurrentLoad <= 0 && _ant.CarryingFruit == null)
-                    {
-                        _ant.GoToDestination(marker);
-                    }
-                    break;
-                case InfoType.SugarSpotted:
-                    if (!(_ant.Destination is Sugar) && _ant.CurrentLoad < _ant.MaximumLoad)
-                    {
-                        _ant.GoToDestination(marker);
-                    }
-                    break;
+                goToMarker();
+            }
+        }
+
+        protected override void OnFruitNeedsCarriers(MarkerInformation markerInfo, Action goToMarker)
+        {
+            if (!(_ant.Destination is Fruit) && _ant.CurrentLoad <= 0 && _ant.CarryingFruit == null)
+            {
+                goToMarker();
             }
         }
 

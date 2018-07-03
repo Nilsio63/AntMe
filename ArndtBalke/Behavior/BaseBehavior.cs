@@ -1,5 +1,6 @@
 ﻿using AntMe.English;
 using AntMe.Player.ArndtBalke.MarkerInfo;
+using System;
 
 namespace AntMe.Player.ArndtBalke.Behavior
 {
@@ -94,7 +95,7 @@ namespace AntMe.Player.ArndtBalke.Behavior
         {
             if (_ant.NeedsCarrier(fruit))
             {
-                _ant.MakeMark(new MarkerInformation(InfoType.FruitSpotted).Encode(), 100);
+                MarkFruitNeedsCarriers(fruit);
             }
         }
 
@@ -108,7 +109,7 @@ namespace AntMe.Player.ArndtBalke.Behavior
         {
             if (sugar.Amount > _ant.MaximumLoad * 4)
             {
-                _ant.MakeMark(new MarkerInformation(InfoType.SugarSpotted).Encode(), 75);
+                MarkSugarSpotted(sugar);
             }
         }
 
@@ -146,6 +147,81 @@ namespace AntMe.Player.ArndtBalke.Behavior
         /// <param name="marker">marker</param>
         public virtual void DetectedScentFriend(Marker marker)
         {
+            MarkerInformation markerInfo = new MarkerInformation(marker.Information);
+
+            if (IgnoreMarker(marker))
+                return;
+
+            Action goToMarker = () =>
+            {
+                _ant.GoToDestination(marker);
+            };
+
+            switch (markerInfo.InfoType)
+            {
+                case 0:
+                    OnBugSpotted(markerInfo, goToMarker);
+                    break;
+                case 1:
+                    OnEnemyAntSpotted(markerInfo, goToMarker);
+                    break;
+                case 2:
+                    OnSugarSpotted(markerInfo, goToMarker);
+                    break;
+                case 3:
+                    OnFruitNeedsCarriers(markerInfo, goToMarker);
+                    break;
+            }
+        }
+
+        protected virtual bool IgnoreMarker(Marker marker)
+        {
+            return false;
+        }
+
+        protected virtual void OnBugSpotted(MarkerInformation markerInfo, Action goToMarker)
+        {
+
+        }
+
+        protected virtual void OnEnemyAntSpotted(MarkerInformation markerInfo, Action goToMarker)
+        {
+
+        }
+
+        protected virtual void OnSugarSpotted(MarkerInformation markerInfo, Action goToMarker)
+        {
+
+        }
+
+        protected virtual void OnFruitNeedsCarriers(MarkerInformation markerInfo, Action goToMarker)
+        {
+
+        }
+
+        private void MakeMark(byte infoType, int range)
+        {
+            _ant.MakeMark(new MarkerInformation(infoType).Encode(), range);
+        }
+
+        protected virtual void MarkBugSpotted(Bug bug)
+        {
+            MakeMark(0, 75);
+        }
+
+        protected virtual void MarkEnemyAntSpotted(Ant ant)
+        {
+            MakeMark(1, 75);
+        }
+
+        protected virtual void MarkSugarSpotted(Sugar sugar)
+        {
+            MakeMark(2, 50);
+        }
+
+        protected virtual void MarkFruitNeedsCarriers(Fruit fruit)
+        {
+            MakeMark(3, 200);
         }
 
         /// <summary>
@@ -183,7 +259,7 @@ namespace AntMe.Player.ArndtBalke.Behavior
         /// <param name="ant">spotted ant</param>
         public virtual void SpotsEnemy(Ant ant)
         {
-            _ant.MakeMark(new MarkerInformation(InfoType.EnemyAntSpotted).Encode(), 75);
+            MarkEnemyAntSpotted(ant);
         }
 
         /// <summary>
@@ -194,7 +270,7 @@ namespace AntMe.Player.ArndtBalke.Behavior
         /// <param name="bug">spotted bug</param>
         public virtual void SpotsEnemy(Bug bug)
         {
-            _ant.MakeMark(new MarkerInformation(InfoType.BugSpotted).Encode(), 75);
+            MarkBugSpotted(bug);
         }
 
         /// <summary>
