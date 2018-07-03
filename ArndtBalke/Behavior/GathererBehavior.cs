@@ -80,7 +80,11 @@ namespace AntMe.Player.ArndtBalke.Behavior
         /// </summary>
         public override void Tick()
         {
-            _listSugar.RemoveAll(o => o.Amount <= 0);
+            for (int i = 0; i < _listSugar.Count; i++)
+            {
+                if (_listSugar[i].Amount <= 0)
+                    _listSugar.RemoveAt(i);
+            }
 
             if (_ant.CarryingFruit != null && _ant.NeedsCarrier(_ant.CarryingFruit))
             {
