@@ -1,6 +1,5 @@
 ﻿using AntMe.English;
 using AntMe.Player.ArndtBalke.MarkerInfo;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -12,6 +11,7 @@ namespace AntMe.Player.ArndtBalke.Behavior
     internal class GathererBehavior : BaseBehavior
     {
         private readonly List<Sugar> _listSugar = new List<Sugar>();
+        private readonly List<Fruit> _listFruit = new List<Fruit>();
 
         #region Properties
 
@@ -43,6 +43,14 @@ namespace AntMe.Player.ArndtBalke.Behavior
         /// </summary>
         public override void Waiting()
         {
+            Fruit f = _listFruit.OrderBy(o => Coordinate.GetDistanceBetween(_ant, o)).FirstOrDefault();
+
+            if (f != null)
+            {
+                GoTo(f);
+                return;
+            }
+
             Sugar s = _listSugar.OrderBy(o => Coordinate.GetDistanceBetween(_ant, o)).FirstOrDefault();
 
             if (s != null)
@@ -87,6 +95,17 @@ namespace AntMe.Player.ArndtBalke.Behavior
                     _listSugar.RemoveAt(i);
             }
 
+            for (int i = 0; i < _listFruit.Count; i++)
+            {
+                if (_listFruit[i].Amount <= 0)
+                    _listFruit.RemoveAt(i);
+            }
+
+            if (_ant.Range - _ant.WalkedRange - _ant.Range * 0.02 < _ant.DistanceToAnthill)
+            {
+                GoToAnthill();
+            }
+
             if (_ant.CarryingFruit != null && _ant.NeedsCarrier(_ant.CarryingFruit))
             {
                 MarkFruitNeedsCarriers(_ant.CarryingFruit);
@@ -106,6 +125,9 @@ namespace AntMe.Player.ArndtBalke.Behavior
         public override void Spots(Fruit fruit)
         {
             base.Spots(fruit);
+
+            if (!_listFruit.Contains(fruit))
+                _listFruit.Add(fruit);
 
             if (_ant.NeedsCarrier(fruit))
             {
@@ -131,7 +153,7 @@ namespace AntMe.Player.ArndtBalke.Behavior
             if (!_listSugar.Contains(sugar))
                 _listSugar.Add(sugar);
 
-            if (_ant.CarryingFruit == null && _ant.CurrentLoad < _ant.MaximumLoad)
+            if (_ant.CarryingFruit == null && _ant.CurrentLoad < _ant.MaximumLoad && _ant.Destination == null)
             {
                 if (_ant.Range - _ant.WalkedRange > _ant.DistanceToAnthill)
                 {
