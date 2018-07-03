@@ -15,7 +15,7 @@ namespace AntMe.Player.ArndtBalke.Behavior
         /// <summary>
         /// The ant to be controlled.
         /// </summary>
-        protected readonly ArndtBalkeClass _ant;
+        private readonly ArndtBalkeClass _ant;
 
         #endregion
 
@@ -25,6 +25,22 @@ namespace AntMe.Player.ArndtBalke.Behavior
         /// The caste name for this behavior.
         /// </summary>
         public abstract string Caste { get; }
+
+        protected Anthill Anthill { get; private set; }
+
+        protected int Range => _ant.Range;
+
+        protected int WalkedRange => _ant.WalkedRange;
+
+        protected int FriendlyAntsFromSameCasteInViewrange => _ant.FriendlyAntsFromSameCasteInViewrange;
+
+        protected Item Destination =>  _ant.Destination;
+
+        protected Fruit CarryingFruit => _ant.CarryingFruit;
+
+        protected int MaximumLoad => _ant.MaximumLoad;
+
+        protected int CurrentLoad => _ant.CurrentLoad;
 
         #endregion
 
@@ -80,6 +96,27 @@ namespace AntMe.Player.ArndtBalke.Behavior
         /// </summary>
         public virtual void Tick()
         {
+            if (Anthill == null)
+            {
+                GoToAnthill();
+
+                Anthill = Destination as Anthill;
+            }
+        }
+
+        protected int GetDistanceTo(Item item)
+        {
+            return item == null ? -1 : Coordinate.GetDistanceBetween(_ant, item);
+        }
+
+        protected int GetDistanceTo(RelativeCoordinate coordinate)
+        {
+            return _ant.GetDistanceTo(coordinate);
+        }
+
+        protected void GoForward()
+        {
+            _ant.GoForward();
         }
 
         protected void GoToAnthill()
@@ -101,6 +138,22 @@ namespace AntMe.Player.ArndtBalke.Behavior
 
         #region Food
 
+        protected bool NeedsCarrier()
+        {
+            return NeedsCarrier(_ant.CarryingFruit);
+        }
+
+        protected bool NeedsCarrier(Fruit fruit)
+        {
+            return fruit != null
+                && _ant.NeedsCarrier(fruit);
+        }
+
+        protected void Take(Food food)
+        {
+            _ant.Take(food);
+        }
+
         /// <summary>
         /// This method is called as soon as an ant sees an apple within its 360° 
         /// visual range. The parameter is the piece of fruit that the ant has spotted.
@@ -109,7 +162,7 @@ namespace AntMe.Player.ArndtBalke.Behavior
         /// <param name="fruit">spotted fruit</param>
         public virtual void Spots(Fruit fruit)
         {
-            if (_ant.NeedsCarrier(fruit))
+            if (NeedsCarrier(fruit))
             {
                 MarkFruitNeedsCarriers(fruit);
             }
@@ -123,7 +176,7 @@ namespace AntMe.Player.ArndtBalke.Behavior
         /// <param name="sugar">spotted sugar</param>
         public virtual void Spots(Sugar sugar)
         {
-            if (sugar.Amount > _ant.MaximumLoad * 4)
+            if (sugar.Amount > MaximumLoad * 4)
             {
                 MarkSugarSpotted(sugar);
             }
@@ -161,7 +214,7 @@ namespace AntMe.Player.ArndtBalke.Behavior
         /// Read more: "http://wiki.antme.net/en/API1:DetectedScentFriend(Marker)"
         /// </summary>
         /// <param name="marker">marker</param>
-        public virtual void DetectedScentFriend(Marker marker)
+        public void DetectedScentFriend(Marker marker)
         {
             MarkerInformation markerInfo = new MarkerInformation(marker.Information);
 
@@ -270,6 +323,11 @@ namespace AntMe.Player.ArndtBalke.Behavior
         #endregion
 
         #region Fight
+
+        protected void Attack(Insect insect)
+        {
+            _ant.Attack(insect);
+        }
 
         /// <summary>
         /// Just as ants can see various types of food, they can also visually detect 

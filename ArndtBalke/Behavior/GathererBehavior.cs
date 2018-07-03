@@ -43,7 +43,7 @@ namespace AntMe.Player.ArndtBalke.Behavior
         /// </summary>
         public override void Waiting()
         {
-            Fruit f = _listFruit.OrderBy(o => Coordinate.GetDistanceBetween(_ant, o)).FirstOrDefault();
+            Fruit f = _listFruit.OrderBy(o => GetDistanceTo(o)).FirstOrDefault();
 
             if (f != null)
             {
@@ -51,7 +51,7 @@ namespace AntMe.Player.ArndtBalke.Behavior
                 return;
             }
 
-            Sugar s = _listSugar.OrderBy(o => Coordinate.GetDistanceBetween(_ant, o)).FirstOrDefault();
+            Sugar s = _listSugar.OrderBy(o => GetDistanceTo(o)).FirstOrDefault();
 
             if (s != null)
             {
@@ -59,7 +59,7 @@ namespace AntMe.Player.ArndtBalke.Behavior
                 return;
             }
 
-            _ant.GoForward();
+            GoForward();
         }
 
         /// <summary>
@@ -101,14 +101,14 @@ namespace AntMe.Player.ArndtBalke.Behavior
                     _listFruit.RemoveAt(i);
             }
 
-            if (_ant.Range - _ant.WalkedRange - _ant.Range * 0.02 < _ant.DistanceToAnthill)
+            if (Range - WalkedRange - Range * 0.02 < GetDistanceTo(Anthill))
             {
                 GoToAnthill();
             }
 
-            if (_ant.CarryingFruit != null && _ant.NeedsCarrier(_ant.CarryingFruit))
+            if (NeedsCarrier())
             {
-                MarkFruitNeedsCarriers(_ant.CarryingFruit);
+                MarkFruitNeedsCarriers(CarryingFruit);
             }
         }
 
@@ -129,11 +129,11 @@ namespace AntMe.Player.ArndtBalke.Behavior
             if (!_listFruit.Contains(fruit))
                 _listFruit.Add(fruit);
 
-            if (_ant.NeedsCarrier(fruit))
+            if (NeedsCarrier(fruit))
             {
                 MarkFruitNeedsCarriers(fruit);
 
-                if (_ant.Destination == null || _ant.Destination is Sugar || _ant.Destination is Marker)
+                if (Destination == null || Destination is Sugar || Destination is Marker)
                 {
                     GoTo(fruit);
                 }
@@ -153,9 +153,9 @@ namespace AntMe.Player.ArndtBalke.Behavior
             if (!_listSugar.Contains(sugar))
                 _listSugar.Add(sugar);
 
-            if (_ant.CarryingFruit == null && _ant.CurrentLoad < _ant.MaximumLoad && _ant.Destination == null)
+            if (CarryingFruit == null && CurrentLoad < MaximumLoad && Destination == null)
             {
-                if (_ant.Range - _ant.WalkedRange > _ant.DistanceToAnthill)
+                if (Range - WalkedRange > GetDistanceTo(Anthill))
                 {
                     GoTo(sugar);
                 }
@@ -171,9 +171,9 @@ namespace AntMe.Player.ArndtBalke.Behavior
         /// <param name="fruit">reached fruit</param>
         public override void DestinationReached(Fruit fruit)
         {
-            if (_ant.NeedsCarrier(fruit))
+            if (NeedsCarrier(fruit))
             {
-                _ant.Take(fruit);
+                Take(fruit);
                 GoToAnthill();
             }
         }
@@ -187,7 +187,7 @@ namespace AntMe.Player.ArndtBalke.Behavior
         /// <param name="sugar">reached sugar</param>
         public override void DestinationReached(Sugar sugar)
         {
-            _ant.Take(sugar);
+            Take(sugar);
             GoToAnthill();
         }
 
@@ -197,13 +197,13 @@ namespace AntMe.Player.ArndtBalke.Behavior
 
         protected override bool IgnoreMarker(MarkerInformation markerInfo)
         {
-            if (_ant.Destination == null)
+            if (Destination == null)
             {
-                if (_ant.Destination is Anthill)
+                if (Destination is Anthill)
                     return true;
-                else if (_ant.Destination is Sugar)
+                else if (Destination is Sugar)
                     return false;
-                else if (_ant.DistanceToDestination < _ant.GetDistanceTo(markerInfo.Coordinates))
+                else if (GetDistanceTo(Destination) < GetDistanceTo(markerInfo.Coordinates))
                     return true;
             }
 
@@ -212,7 +212,7 @@ namespace AntMe.Player.ArndtBalke.Behavior
 
         protected override void OnSugarSpotted(MarkerInformation markerInfo)
         {
-            if (!(_ant.Destination is Sugar) && _ant.CurrentLoad < _ant.MaximumLoad)
+            if (!(Destination is Sugar) && CurrentLoad < MaximumLoad)
             {
                 GoTo(markerInfo);
             }
@@ -220,7 +220,7 @@ namespace AntMe.Player.ArndtBalke.Behavior
 
         protected override void OnFruitNeedsCarriers(MarkerInformation markerInfo)
         {
-            if (!(_ant.Destination is Fruit) && _ant.CurrentLoad <= 0 && _ant.CarryingFruit == null)
+            if (!(Destination is Fruit) && CurrentLoad <= 0 && CarryingFruit == null)
             {
                 GoTo(markerInfo);
             }

@@ -40,7 +40,7 @@ namespace AntMe.Player.ArndtBalke.Behavior
         /// </summary>
         public override void Waiting()
         {
-            _ant.GoForward();
+            GoForward();
         }
 
         /// <summary>
@@ -78,7 +78,7 @@ namespace AntMe.Player.ArndtBalke.Behavior
 
         protected override void OnEnemyAntSpotted(MarkerInformation markerInfo)
         {
-            if (_ant.Destination == null)
+            if (Destination == null)
             {
                 GoTo(markerInfo);
             }
@@ -121,9 +121,9 @@ namespace AntMe.Player.ArndtBalke.Behavior
         {
             base.SpotsEnemy(ant);
 
-            if (_ant.Destination == null)
+            if (Destination == null)
             {
-                _ant.Attack(ant);
+                Attack(ant);
             }
         }
 
@@ -137,9 +137,9 @@ namespace AntMe.Player.ArndtBalke.Behavior
         {
             base.SpotsEnemy(bug);
 
-            if (_ant.Destination == null && _ant.FriendlyAntsFromSameCasteInViewrange > 4)
+            if (Destination == null && FriendlyAntsFromSameCasteInViewrange > 4)
             {
-                _ant.Attack(bug);
+                Attack(bug);
             }
         }
 
@@ -151,7 +151,7 @@ namespace AntMe.Player.ArndtBalke.Behavior
         /// <param name="ant">attacking ant</param>
         public override void UnderAttack(Ant ant)
         {
-            _ant.Attack(ant);
+            Attack(ant);
         }
 
         /// <summary>
@@ -162,7 +162,7 @@ namespace AntMe.Player.ArndtBalke.Behavior
         /// <param name="bug">attacking bug</param>
         public override void UnderAttack(Bug bug)
         {
-            _ant.Attack(bug);
+            Attack(bug);
         }
 
         #endregion
