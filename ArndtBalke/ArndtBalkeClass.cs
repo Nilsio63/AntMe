@@ -182,7 +182,7 @@ namespace AntMe.Player.ArndtBalke
 
             double degree = Math.Atan(y / x) * 180 / Math.PI;
             degree += 360;
-            if (x < 0 && y > 0 || x > 0 && y < 0)
+            if (x < 0)
                 degree += 180;
             degree %= 360;
 
