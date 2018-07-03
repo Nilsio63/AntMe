@@ -3,7 +3,6 @@ using AntMe.Player.ArndtBalke.Behavior;
 using AntMe.Player.ArndtBalke.Map;
 using System;
 using System.Collections.Generic;
-using System.Reflection;
 
 namespace AntMe.Player.ArndtBalke
 {
@@ -60,8 +59,7 @@ namespace AntMe.Player.ArndtBalke
         public override string ChooseCaste(Dictionary<string, int> typeCount)
         {
             // Check caste counts
-            //if (typeCount["Hunter"] < typeCount["Gatherer"])
-            if (typeCount["Gatherer"] > 0)
+            if (typeCount["Hunter"] < typeCount["Gatherer"])
             {
                 // Create hunter behavior
                 behavior = new HunterBehavior(this);

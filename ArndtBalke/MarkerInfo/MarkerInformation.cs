@@ -16,6 +16,10 @@ namespace AntMe.Player.ArndtBalke.MarkerInfo
         /// The coordinates of the original marker.
         /// </summary>
         public RelativeCoordinate Coordinates { get; private set; }
+        /// <summary>
+        /// The hop count of the information.
+        /// </summary>
+        public short HopCount { get; private set; }
 
         /// <summary>
         /// Creates a new marker information instance.
@@ -34,6 +38,7 @@ namespace AntMe.Player.ArndtBalke.MarkerInfo
         {
             InfoType = infoType;
             Coordinates = coordinates;
+            HopCount = 3;
         }
 
         /// <summary>
@@ -45,9 +50,12 @@ namespace AntMe.Player.ArndtBalke.MarkerInfo
             // Decode info type from lowest 4 Bits
             InfoType = (byte)(encoded & 0xF);
 
-            // Decode coordinates from second highest to fifth lowest bit
+            // Decode coordinates from third highest to fifth lowest bit
             int coordinates = (encoded & 0x7FFFFFF0) >> 4;
             Coordinates = new RelativeCoordinate(GetInt32(coordinates >> 13), GetInt32(coordinates & 0x1FFF));
+
+            // Decode hop count from two highest bits
+            HopCount = (short)((encoded >> 30) & 0x3);
         }
 
         /// <summary>
@@ -69,8 +77,11 @@ namespace AntMe.Player.ArndtBalke.MarkerInfo
                 coordinates |= GetInt13(Coordinates.Y) & 0x1FFF;
             }
 
-            // Add encoded coordinate data to second highest to fifth lowest bit
+            // Add encoded coordinate data to third highest to fifth lowest bit
             encoded |= (coordinates << 4) & 0x7FFFFFF0;
+
+            // Encode hop count as two highest bits
+            encoded |= HopCount << 30;
 
             return encoded;
         }
@@ -79,15 +90,10 @@ namespace AntMe.Player.ArndtBalke.MarkerInfo
         {
             int res = Math.Abs(int32) & 0xFFF;
 
-            System.Diagnostics.Trace.WriteLine(Convert.ToString(int32, 2));
-            System.Diagnostics.Trace.WriteLine(Convert.ToString(res, 2));
-
             if (int32 < 0)
             {
                 res |= 1 << 12;
             }
-
-            System.Diagnostics.Trace.WriteLine(Convert.ToString(res, 2));
 
             return res;
         }
@@ -99,10 +105,6 @@ namespace AntMe.Player.ArndtBalke.MarkerInfo
 
             if (sign == 1)
                 value = -value;
-
-            System.Diagnostics.Trace.WriteLine(Convert.ToString(int13, 2));
-            System.Diagnostics.Trace.WriteLine(Convert.ToString(value, 2));
-            System.Diagnostics.Trace.WriteLine(Convert.ToString(sign, 2));
 
             return value;
         }
