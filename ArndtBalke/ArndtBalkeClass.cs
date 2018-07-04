@@ -1,7 +1,5 @@
 using AntMe.English;
 using AntMe.Player.ArndtBalke.Behavior;
-using AntMe.Player.ArndtBalke.Map;
-using System;
 using System.Collections.Generic;
 
 namespace AntMe.Player.ArndtBalke
@@ -16,9 +14,9 @@ namespace AntMe.Player.ArndtBalke
         AttackModifier = -1,
         EnergyModifier = -1,
         LoadModifier = 1,
-        RangeModifier = 0,
+        RangeModifier = -1,
         RotationSpeedModifier = 0,
-        SpeedModifier = 1,
+        SpeedModifier = 2,
         ViewRangeModifier = 0
     )]
     [Caste(
