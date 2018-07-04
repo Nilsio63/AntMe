@@ -303,7 +303,7 @@ namespace AntMe.Player.ArndtBalke.Behavior
 
             MarkerInformation markerInfo = new MarkerInformation(marker.Information);
 
-            if (markerInfo.HopCount < 1 && !_cache.Markers.Contains(markerInfo))
+            if (markerInfo.HopCount < 2 && !_cache.Markers.Contains(markerInfo))
                 MakeMark(new MarkerInformation(markerInfo), 90);
 
             _cache.Add(markerInfo);
@@ -379,7 +379,10 @@ namespace AntMe.Player.ArndtBalke.Behavior
 
         protected void Attack(Insect insect)
         {
-            _ant.Attack(insect);
+            if (GetDistanceTo(insect) > ViewRange)
+                GoTo(insect);
+            else
+                _ant.Attack(insect);
         }
 
         /// <summary>

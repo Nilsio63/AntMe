@@ -55,7 +55,7 @@ namespace AntMe.Player.ArndtBalke.Behavior
             MarkerInformation nearestAntMarker = _cache.Markers.Ants.GetNearest();
 
             if (nearestAnt != null
-                && (nearestAntMarker == null || GetDistanceTo(nearestAnt) < GetDistanceTo(nearestAntMarker)))
+                && (nearestAntMarker == null || GetDistanceTo(nearestAnt) < GetDistanceTo(nearestAntMarker) * 1.25))
             {
                 Attack(nearestAnt);
                 return true;
@@ -76,7 +76,7 @@ namespace AntMe.Player.ArndtBalke.Behavior
             MarkerInformation nearestBugMarker = _cache.Markers.Bugs.GetNearest();
 
             if (nearestBug != null
-                && (nearestBugMarker == null || GetDistanceTo(nearestBug) < GetDistanceTo(nearestBugMarker)))
+                && (nearestBugMarker == null || GetDistanceTo(nearestBug) < GetDistanceTo(nearestBugMarker) * 1.25))
             {
                 Attack(nearestBug);
                 return true;

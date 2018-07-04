@@ -9,6 +9,11 @@ namespace AntMe.Player.ArndtBalke.Cache
             : base(ant)
         { }
 
+        public override void Add(MarkerInformation obj)
+        {
+            _list.Add(obj);
+        }
+
         public override bool Contains(MarkerInformation obj)
         {
             if (base.Contains(obj))
@@ -26,7 +31,7 @@ namespace AntMe.Player.ArndtBalke.Cache
 
         protected override int GetDistanceToAnt(MarkerInformation obj)
         {
-            return _ant.GetDistanceTo(obj);
+            return (int)(_ant.GetDistanceTo(obj) * (1 + (double)obj.Age / 4));
         }
 
         public override void Cleanup()

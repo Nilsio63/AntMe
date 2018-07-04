@@ -26,7 +26,7 @@ namespace AntMe.Player.ArndtBalke.Cache
             : base(ant)
         { }
 
-        public void Add(T obj)
+        public virtual void Add(T obj)
         {
             if (!Contains(obj))
                 _list.Add(obj);
