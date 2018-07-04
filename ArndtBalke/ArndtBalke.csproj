@@ -52,6 +52,9 @@
     <Compile Include="Behavior\BaseBehavior.cs" />
     <Compile Include="Behavior\GathererBehavior.cs" />
     <Compile Include="Behavior\HunterBehavior.cs" />
+    <Compile Include="Cache\CacheBase.cs" />
+    <Compile Include="Cache\FoodCache.cs" />
+    <Compile Include="Cache\OpponentCache.cs" />
     <Compile Include="Map\RelativeCoordinate.cs" />
     <Compile Include="MarkerInfo\MarkerInformation.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

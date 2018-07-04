@@ -40,7 +40,7 @@ namespace AntMe.Player.ArndtBalke.Behavior
         /// </summary>
         public override void Waiting()
         {
-            Fruit f = _listFruit.OrderBy(o => GetDistanceTo(o)).FirstOrDefault();
+            Fruit f = _cacheFruit.OrderBy(o => GetDistanceTo(o)).FirstOrDefault();
 
             if (f != null)
             {
@@ -48,7 +48,7 @@ namespace AntMe.Player.ArndtBalke.Behavior
                 return;
             }
 
-            Sugar s = _listSugar.OrderBy(o => GetDistanceTo(o)).FirstOrDefault();
+            Sugar s = _cacheSugar.OrderBy(o => GetDistanceTo(o)).FirstOrDefault();
 
             if (s != null)
             {
