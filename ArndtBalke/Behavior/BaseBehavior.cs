@@ -104,16 +104,6 @@ namespace AntMe.Player.ArndtBalke.Behavior
             }
         }
 
-        protected int GetDistanceTo(Item item)
-        {
-            return item == null ? -1 : Coordinate.GetDistanceBetween(_ant, item);
-        }
-
-        protected int GetDistanceTo(RelativeCoordinate coordinate)
-        {
-            return _ant.GetDistanceTo(coordinate);
-        }
-
         protected void GoForward()
         {
             _ant.GoForward();
@@ -131,7 +121,68 @@ namespace AntMe.Player.ArndtBalke.Behavior
 
         protected void GoTo(MarkerInformation markerInfo)
         {
-            _ant.GoTo(markerInfo.Coordinates);
+            GoTo(markerInfo.Coordinates);
+        }
+
+        public void GoTo(RelativeCoordinate coordinate)
+        {
+            RelativeCoordinate ownCoordinate = GetCoordinate();
+
+            if (coordinate == null || ownCoordinate == null)
+                return;
+
+            double x = coordinate.X - ownCoordinate.X;
+            double y = coordinate.Y - ownCoordinate.Y;
+
+            double distance = Math.Sqrt(Math.Pow(x, 2) + Math.Pow(y, 2));
+
+            if (distance == 0)
+                return;
+
+            double degree = Math.Atan(y / x) * 180 / Math.PI;
+            degree += 360;
+            if (x < 0)
+                degree += 180;
+            degree %= 360;
+
+            _ant.TurnToDirection((int)degree);
+            _ant.GoForward((int)distance);
+        }
+
+        public RelativeCoordinate GetCoordinate(Item item)
+        {
+            if (Anthill == null)
+                return null;
+
+            return new RelativeCoordinate(Anthill, item);
+        }
+
+        public RelativeCoordinate GetCoordinate()
+        {
+            if (Anthill == null)
+                return null;
+
+            return new RelativeCoordinate(Anthill, _ant);
+        }
+
+        public int GetDistanceTo(RelativeCoordinate coordinate)
+        {
+            RelativeCoordinate ownCoordinate = GetCoordinate();
+
+            if (coordinate == null || ownCoordinate == null)
+                return -1;
+
+            int x = ownCoordinate.X - coordinate.X;
+            int y = ownCoordinate.Y - coordinate.Y;
+
+            double distance = Math.Sqrt(Math.Pow(x, 2) + Math.Pow(y, 2));
+
+            return (int)distance;
+        }
+
+        protected int GetDistanceTo(Item item)
+        {
+            return item == null ? -1 : Coordinate.GetDistanceBetween(_ant, item);
         }
 
         #endregion
@@ -280,22 +331,22 @@ namespace AntMe.Player.ArndtBalke.Behavior
 
         protected virtual void MarkBugSpotted(Bug bug)
         {
-            MakeMark(0, _ant.GetCoordinate(bug), 75);
+            MakeMark(0, GetCoordinate(bug), 75);
         }
 
         protected virtual void MarkEnemyAntSpotted(Ant ant)
         {
-            MakeMark(1, _ant.GetCoordinate(ant), 75);
+            MakeMark(1, GetCoordinate(ant), 75);
         }
 
         protected virtual void MarkSugarSpotted(Sugar sugar)
         {
-            MakeMark(2, _ant.GetCoordinate(sugar), 50);
+            MakeMark(2, GetCoordinate(sugar), 50);
         }
 
         protected virtual void MarkFruitNeedsCarriers(Fruit fruit)
         {
-            MakeMark(3, _ant.GetCoordinate(fruit), 200);
+            MakeMark(3, GetCoordinate(fruit), 200);
         }
 
         /// <summary>

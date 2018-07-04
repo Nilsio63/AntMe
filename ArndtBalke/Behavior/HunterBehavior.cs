@@ -70,6 +70,7 @@ namespace AntMe.Player.ArndtBalke.Behavior
         /// </summary>
         public override void Tick()
         {
+            base.Tick();
         }
 
         #endregion

@@ -89,6 +89,8 @@ namespace AntMe.Player.ArndtBalke.Behavior
         /// </summary>
         public override void Tick()
         {
+            base.Tick();
+
             for (int i = 0; i < _listSugar.Count; i++)
             {
                 if (_listSugar[i].Amount <= 0)

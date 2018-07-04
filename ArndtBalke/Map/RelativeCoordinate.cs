@@ -1,4 +1,7 @@
-﻿namespace AntMe.Player.ArndtBalke.Map
+﻿using AntMe.English;
+using System;
+
+namespace AntMe.Player.ArndtBalke.Map
 {
     /// <summary>
     /// Class to save relative position of an object.
@@ -23,6 +26,31 @@
         {
             X = x;
             Y = y;
+        }
+
+        public RelativeCoordinate(Anthill anthill, Item item)
+        {
+            double distance = Coordinate.GetDistanceBetween(anthill, item);
+            double degrees = Coordinate.GetDegreesBetween(anthill, item);
+
+            SetCoordinatesBeDegrees(distance, degrees);
+        }
+
+        public RelativeCoordinate(Anthill anthill, BaseAnt ant)
+        {
+            double distance = Coordinate.GetDistanceBetween(anthill, ant);
+            double degrees = Coordinate.GetDegreesBetween(anthill, ant);
+
+            SetCoordinatesBeDegrees(distance, degrees);
+        }
+
+        private void SetCoordinatesBeDegrees(double distance, double degrees)
+        {
+            double x = Math.Cos(degrees * Math.PI / 180) * distance;
+            double y = Math.Sin(degrees * Math.PI / 180) * distance;
+
+            X = (int)x;
+            Y = (int)y;
         }
 
     }

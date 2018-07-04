@@ -18,8 +18,8 @@ namespace AntMe.Player.ArndtBalke
         LoadModifier = 1,
         RangeModifier = 0,
         RotationSpeedModifier = 0,
-        SpeedModifier = 1,
-        ViewRangeModifier = 0
+        SpeedModifier = 0,
+        ViewRangeModifier = 1
     )]
     [Caste(
         Name = "Hunter",
@@ -39,11 +39,6 @@ namespace AntMe.Player.ArndtBalke
         /// The behavior of the ant.
         /// </summary>
         private BaseBehavior behavior;
-
-        /// <summary>
-        /// The ant's original anthill.
-        /// </summary>
-        private Anthill antHill;
 
         #endregion
 
@@ -123,86 +118,8 @@ namespace AntMe.Player.ArndtBalke
         /// </summary>
         public override void Tick()
         {
-            // Search for anthill if not set
-            if (antHill == null)
-            {
-                GoToAnthill();
-
-                antHill = Destination as Anthill;
-            }
-
             // Call behavior
             behavior.Tick();
-        }
-
-        public RelativeCoordinate GetCoordinate(Item item)
-        {
-            if (antHill == null)
-                return null;
-
-            double distance = Coordinate.GetDistanceBetween(antHill, item);
-            double degrees = Coordinate.GetDegreesBetween(antHill, item);
-
-            return GetCoordinateByDegrees(distance, degrees);
-        }
-
-        public RelativeCoordinate GetCoordinate()
-        {
-            if (antHill == null)
-                return null;
-
-            double distance = Coordinate.GetDistanceBetween(antHill, this);
-            double degrees = Coordinate.GetDegreesBetween(antHill, this);
-
-            return GetCoordinateByDegrees(distance, degrees);
-        }
-
-        private RelativeCoordinate GetCoordinateByDegrees(double distance, double degrees)
-        {
-            double x = Math.Cos(degrees * Math.PI / 180) * distance;
-            double y = Math.Sin(degrees * Math.PI / 180) * distance;
-
-            return new RelativeCoordinate((int)x, (int)y);
-        }
-
-        public void GoTo(RelativeCoordinate coordinate)
-        {
-            RelativeCoordinate ownCoordinate = GetCoordinate();
-
-            if (coordinate == null || ownCoordinate == null)
-                return;
-
-            double x = coordinate.X - ownCoordinate.X;
-            double y = coordinate.Y - ownCoordinate.Y;
-
-            double distance = Math.Sqrt(Math.Pow(x, 2) + Math.Pow(y, 2));
-
-            if (distance == 0)
-                return;
-
-            double degree = Math.Atan(y / x) * 180 / Math.PI;
-            degree += 360;
-            if (x < 0)
-                degree += 180;
-            degree %= 360;
-
-            TurnToDirection((int)degree);
-            GoForward((int)distance);
-        }
-
-        public int GetDistanceTo(RelativeCoordinate coordinate)
-        {
-            RelativeCoordinate ownCoordinate = GetCoordinate();
-
-            if (coordinate == null || ownCoordinate == null)
-                return -1;
-
-            int x = ownCoordinate.X - coordinate.X;
-            int y = ownCoordinate.Y - coordinate.Y;
-
-            double distance = Math.Sqrt(Math.Pow(x, 2) + Math.Pow(y, 2));
-
-            return (int)distance;
         }
 
         #endregion
