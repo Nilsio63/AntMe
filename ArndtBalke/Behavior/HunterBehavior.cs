@@ -1,5 +1,6 @@
 ﻿using AntMe.English;
 using AntMe.Player.ArndtBalke.MarkerInfo;
+using System.Linq;
 
 namespace AntMe.Player.ArndtBalke.Behavior
 {
@@ -33,57 +34,70 @@ namespace AntMe.Player.ArndtBalke.Behavior
 
         protected override void DoNextMove()
         {
-            throw new System.NotImplementedException();
+            if (Destination is Anthill)
+                return;
+
+            if (Destination is Ant a)
+                MarkEnemyAntSpotted(a);
+            else if (Destination is Bug b)
+                MarkBugSpotted(b);
+
+            if (DoMoveOpponentAnt())
+                return;
+
+            if (DoMoveBugs())
+                return;
+        }
+
+        private bool DoMoveOpponentAnt()
+        {
+            Ant nearestAnt = _cacheEnemyAnts.OrderBy(o => GetDistanceTo(o)).FirstOrDefault();
+
+            MarkerInformation nearestAntMarker = _cacheMarker.Where(o => o.IsAntSpotted).OrderBy(o => GetDistanceTo(o)).FirstOrDefault();
+
+            if (nearestAnt != null
+                && (nearestAntMarker == null || GetDistanceTo(nearestAnt) < GetDistanceTo(nearestAntMarker)))
+            {
+                Attack(nearestAnt);
+                return true;
+            }
+            else if (nearestAntMarker != null && GetDistanceTo(nearestAntMarker) > ViewRange)
+            {
+                GoTo(nearestAntMarker);
+                return true;
+            }
+
+            return false;
+        }
+
+        private bool DoMoveBugs()
+        {
+            Bug nearestBug = _cacheBugs.OrderBy(o => GetDistanceTo(o)).FirstOrDefault();
+
+            MarkerInformation nearestBugMarker = _cacheMarker.Where(o => o.IsBugSpotted).OrderBy(o => GetDistanceTo(o)).FirstOrDefault();
+
+            if (nearestBug != null
+                && (nearestBugMarker == null || GetDistanceTo(nearestBug) < GetDistanceTo(nearestBugMarker)))
+            {
+                Attack(nearestBug);
+                return true;
+            }
+            else if (nearestBugMarker != null && GetDistanceTo(nearestBugMarker) > ViewRange)
+            {
+                GoTo(nearestBugMarker);
+                return true;
+            }
+
+            return false;
         }
 
         #endregion
 
         #region Communication
 
-        //protected override void OnEnemyAntSpotted(MarkerInformation markerInfo)
-        //{
-        //    if (Destination == null)
-        //    {
-        //        GoTo(markerInfo);
-        //    }
-        //}
-
         #endregion
 
         #region Fight
-
-        /// <summary>
-        /// Just as ants can see various types of food, they can also visually detect 
-        /// other game elements. This method is called if the ant detects an ant from an 
-        /// enemy colony.
-        /// Read more: "http://wiki.antme.net/en/API1:SpotsEnemy(Ant)"
-        /// </summary>
-        /// <param name="ant">spotted ant</param>
-        public override void SpotsEnemy(Ant ant)
-        {
-            base.SpotsEnemy(ant);
-
-            if (Destination == null)
-            {
-                Attack(ant);
-            }
-        }
-
-        /// <summary>
-        /// Just as ants can see various types of food, they can also visually detect 
-        /// other game elements. This method is called if the ant sees a bug.
-        /// Read more: "http://wiki.antme.net/en/API1:SpotsEnemy(Bug)"
-        /// </summary>
-        /// <param name="bug">spotted bug</param>
-        public override void SpotsEnemy(Bug bug)
-        {
-            base.SpotsEnemy(bug);
-
-            if (Destination == null /*&& FriendlyAntsFromSameCasteInViewrange > 4*/)
-            {
-                Attack(bug);
-            }
-        }
 
         /// <summary>
         /// Enemy creatures may actively attack the ant. This method is called if an 

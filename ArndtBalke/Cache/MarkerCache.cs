@@ -16,7 +16,7 @@ namespace AntMe.Player.ArndtBalke.Cache
             obj.Age++;
 
             if (obj.IsBugSpotted || obj.IsAntSpotted)
-                return obj.Age > 2;
+                return obj.Age > 1;
             else
                 return obj.Age > 6;
         }

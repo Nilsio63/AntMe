@@ -53,23 +53,23 @@ namespace AntMe.Player.ArndtBalke
         /// <returns>Caste-Name for the next ant</returns>
         public override string ChooseCaste(Dictionary<string, int> typeCount)
         {
-            //// Check caste counts
-            //if (typeCount["Hunter"] < typeCount["Gatherer"])
-            //{
-            //    // Create hunter behavior
-            //    behavior = new HunterBehavior(this);
-            //}
-            //else
-            //{
-            //    // Create gatherer behavior
-            //    behavior = new GathererBehavior(this);
-            //}
+            // Check caste counts
+            if (typeCount["Hunter"] < typeCount["Gatherer"])
+            {
+                // Create hunter behavior
+                behavior = new HunterBehavior(this);
+            }
+            else
+            {
+                // Create gatherer behavior
+                behavior = new GathererBehavior(this);
+            }
 
             //// Create hunter behavior
             //behavior = new HunterBehavior(this);
 
-            // Create gatherer behavior
-            behavior = new GathererBehavior(this);
+            //// Create gatherer behavior
+            //behavior = new GathererBehavior(this);
 
             // Return Caste of behavior
             return behavior.Caste;
