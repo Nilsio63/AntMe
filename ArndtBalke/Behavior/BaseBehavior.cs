@@ -13,6 +13,8 @@ namespace AntMe.Player.ArndtBalke.Behavior
     {
         protected readonly List<Sugar> _listSugar = new List<Sugar>();
         protected readonly List<Fruit> _listFruit = new List<Fruit>();
+        protected readonly List<Bug> _listBugs = new List<Bug>();
+        protected readonly List<Ant> _listEnemyAnts = new List<Ant>();
 
         #region Fields
 
@@ -71,6 +73,11 @@ namespace AntMe.Player.ArndtBalke.Behavior
         /// </summary>
         public virtual void Waiting()
         {
+            if (_ant.CurrentEnergy < _ant.MaximumEnergy * 0.15)
+            {
+                GoToAnthill();
+                return;
+            }
         }
 
         /// <summary>
@@ -117,6 +124,23 @@ namespace AntMe.Player.ArndtBalke.Behavior
             {
                 if (_listFruit[i].Amount <= 0)
                     _listFruit.RemoveAt(i);
+            }
+
+            for (int i = 0; i < _listBugs.Count; i++)
+            {
+                if (_listBugs[i].CurrentEnergy <= 0)
+                    _listBugs.RemoveAt(0);
+            }
+
+            for (int i = 0; i < _listEnemyAnts.Count; i++)
+            {
+                if (_listEnemyAnts[i].CurrentEnergy <= 0)
+                    _listEnemyAnts.RemoveAt(i);
+            }
+
+            if (Range - WalkedRange - Range * 0.02 < GetDistanceTo(Anthill))
+            {
+                GoToAnthill();
             }
         }
 
@@ -219,6 +243,11 @@ namespace AntMe.Player.ArndtBalke.Behavior
         protected void Take(Food food)
         {
             _ant.Take(food);
+        }
+
+        protected void Drop()
+        {
+            _ant.Drop();
         }
 
         /// <summary>
@@ -411,6 +440,9 @@ namespace AntMe.Player.ArndtBalke.Behavior
         /// <param name="ant">spotted ant</param>
         public virtual void SpotsEnemy(Ant ant)
         {
+            if (!_listEnemyAnts.Contains(ant))
+                _listEnemyAnts.Add(ant);
+
             MarkEnemyAntSpotted(ant);
         }
 
@@ -422,6 +454,9 @@ namespace AntMe.Player.ArndtBalke.Behavior
         /// <param name="bug">spotted bug</param>
         public virtual void SpotsEnemy(Bug bug)
         {
+            if (!_listBugs.Contains(bug))
+                _listBugs.Add(bug);
+
             MarkBugSpotted(bug);
         }
 

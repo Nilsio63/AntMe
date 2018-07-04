@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using AntMe.English;
+﻿using AntMe.English;
 using AntMe.Player.ArndtBalke.MarkerInfo;
 
 namespace AntMe.Player.ArndtBalke.Behavior
@@ -86,7 +84,7 @@ namespace AntMe.Player.ArndtBalke.Behavior
         {
             base.SpotsEnemy(bug);
 
-            if (Destination == null && FriendlyAntsFromSameCasteInViewrange > 4)
+            if (Destination == null /*&& FriendlyAntsFromSameCasteInViewrange > 4*/)
             {
                 Attack(bug);
             }

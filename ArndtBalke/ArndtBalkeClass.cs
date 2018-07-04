@@ -23,13 +23,13 @@ namespace AntMe.Player.ArndtBalke
     )]
     [Caste(
         Name = "Hunter",
-        AttackModifier = 1,
-        EnergyModifier = 1,
+        AttackModifier = 2,
+        EnergyModifier = 2,
         LoadModifier = -1,
-        RangeModifier = -1,
-        RotationSpeedModifier = 0,
-        SpeedModifier = 0,
-        ViewRangeModifier = 0
+        RangeModifier = 0,
+        RotationSpeedModifier = -1,
+        SpeedModifier = -1,
+        ViewRangeModifier = -1
     )]
     public class ArndtBalkeClass : BaseAnt
     {
@@ -65,8 +65,11 @@ namespace AntMe.Player.ArndtBalke
             //    behavior = new GathererBehavior(this);
             //}
 
-            // Create gatherer behavior
-            behavior = new GathererBehavior(this);
+            // Create hunter behavior
+            behavior = new HunterBehavior(this);
+
+            //// Create gatherer behavior
+            //behavior = new GathererBehavior(this);
 
             // Return Caste of behavior
             return behavior.Caste;

@@ -69,11 +69,6 @@ namespace AntMe.Player.ArndtBalke.Behavior
         {
             base.Tick();
 
-            if (Range - WalkedRange - Range * 0.02 < GetDistanceTo(Anthill))
-            {
-                GoToAnthill();
-            }
-
             if (NeedsCarrier())
             {
                 MarkFruitNeedsCarriers(CarryingFruit);
@@ -195,6 +190,22 @@ namespace AntMe.Player.ArndtBalke.Behavior
         #endregion
 
         #region Fight
+
+        public override void UnderAttack(Ant ant)
+        {
+            if (CarryingFruit != null || CurrentLoad > 0)
+                Drop();
+
+            GoToAnthill();
+        }
+
+        public override void UnderAttack(Bug bug)
+        {
+            if (CarryingFruit != null || CurrentLoad > 0)
+                Drop();
+
+            GoToAnthill();
+        }
 
         #endregion
 
