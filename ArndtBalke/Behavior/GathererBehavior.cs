@@ -1,6 +1,5 @@
 ﻿using AntMe.English;
 using AntMe.Player.ArndtBalke.MarkerInfo;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace AntMe.Player.ArndtBalke.Behavior
@@ -33,21 +32,6 @@ namespace AntMe.Player.ArndtBalke.Behavior
 
         #region Movement
 
-        //protected override bool IgnoreMarker(MarkerInformation markerInfo)
-        //{
-        //    if (Destination == null)
-        //    {
-        //        if (Destination is Anthill)
-        //            return true;
-        //        else if (Destination is Sugar)
-        //            return false;
-        //        else if (GetDistanceTo(Destination) < GetDistanceTo(markerInfo.Coordinates))
-        //            return true;
-        //    }
-
-        //    return false;
-        //}
-
         protected override void DoNextMove()
         {
             if (NeedsCarrier())
@@ -67,7 +51,7 @@ namespace AntMe.Player.ArndtBalke.Behavior
                 return;
         }
 
-        protected bool DoMoveFruit()
+        private bool DoMoveFruit()
         {
             Fruit nearestFruit = _cacheFruit.Where(o => NeedsCarrier(o)).OrderBy(o => GetDistanceTo(o)).FirstOrDefault();
 
@@ -76,15 +60,11 @@ namespace AntMe.Player.ArndtBalke.Behavior
             if (nearestFruit != null
                 && (nearestFruitMarker == null || GetDistanceTo(nearestFruit) < GetDistanceTo(nearestFruitMarker)))
             {
-                Think("Going to apple");
-
                 GoTo(nearestFruit);
                 return true;
             }
             else if (nearestFruitMarker != null && GetDistanceTo(nearestFruitMarker) > ViewRange)
             {
-                Think("Going to apple marker");
-
                 GoTo(nearestFruitMarker);
                 return true;
             }
@@ -92,7 +72,7 @@ namespace AntMe.Player.ArndtBalke.Behavior
             return false;
         }
 
-        protected bool DoMoveSugar()
+        private bool DoMoveSugar()
         {
             Sugar nearestSugar = _cacheSugar.OrderBy(o => GetDistanceTo(o)).FirstOrDefault();
 
@@ -101,15 +81,11 @@ namespace AntMe.Player.ArndtBalke.Behavior
             if (nearestSugar != null
                 && (nearestSugarMarker == null || GetDistanceTo(nearestSugar) < GetDistanceTo(nearestSugarMarker)))
             {
-                Think("Going to sugar");
-
                 GoTo(nearestSugar);
                 return true;
             }
             else if (nearestSugarMarker != null && GetDistanceTo(nearestSugarMarker) > ViewRange)
             {
-                Think("Going to sugar marker");
-
                 GoTo(nearestSugarMarker);
                 return true;
             }
@@ -197,22 +173,6 @@ namespace AntMe.Player.ArndtBalke.Behavior
         #endregion
 
         #region Communication
-
-        //protected override void OnSugarSpotted(MarkerInformation markerInfo)
-        //{
-        //    if (!(Destination is Sugar) && CurrentLoad < MaximumLoad)
-        //    {
-        //        GoTo(markerInfo);
-        //    }
-        //}
-
-        //protected override void OnFruitNeedsCarriers(MarkerInformation markerInfo)
-        //{
-        //    if (!(Destination is Fruit) && CurrentLoad <= 0 && CarryingFruit == null)
-        //    {
-        //        GoTo(markerInfo);
-        //    }
-        //}
 
         #endregion
 
