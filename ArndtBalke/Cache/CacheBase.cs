@@ -62,7 +62,7 @@ namespace AntMe.Player.ArndtBalke.Cache
             for (int i = 0; i < _list.Count; i++)
             {
                 if (IsDeprecated(_list[i]))
-                    _list.RemoveAt(i);
+                    _list.RemoveAt(i--);
             }
         }
 
