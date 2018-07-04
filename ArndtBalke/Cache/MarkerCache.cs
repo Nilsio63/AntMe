@@ -1,14 +1,32 @@
-﻿using AntMe.Player.ArndtBalke.MarkerInfo;
-using System.Linq;
+﻿using AntMe.Player.ArndtBalke.Behavior;
+using AntMe.Player.ArndtBalke.MarkerInfo;
 
 namespace AntMe.Player.ArndtBalke.Cache
 {
     internal class MarkerCache : CacheBase<MarkerInformation>
     {
-        protected override bool Contains(MarkerInformation obj)
+        public MarkerCache(BaseBehavior ant)
+            : base(ant)
+        { }
+
+        public override bool Contains(MarkerInformation obj)
         {
-            return base.Contains(obj)
-                || _list.Any(o => o.InfoType == obj.InfoType && o.Coordinates.GetDistanceTo(obj.Coordinates) < 50);
+            if (base.Contains(obj))
+                return true;
+
+            foreach (MarkerInformation markerInfo in _list)
+            {
+                if (markerInfo.InfoType == obj.InfoType
+                    && markerInfo.Coordinates.GetDistanceTo(obj.Coordinates) < 50)
+                    return true;
+            }
+
+            return false;
+        }
+
+        protected override int GetDistanceToAnt(MarkerInformation obj)
+        {
+            return _ant.GetDistanceTo(obj);
         }
 
         protected override bool IsDeprecated(MarkerInformation obj)

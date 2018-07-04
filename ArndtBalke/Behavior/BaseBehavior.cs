@@ -4,6 +4,7 @@ using AntMe.Player.ArndtBalke.Map;
 using AntMe.Player.ArndtBalke.MarkerInfo;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace AntMe.Player.ArndtBalke.Behavior
 {
@@ -12,11 +13,7 @@ namespace AntMe.Player.ArndtBalke.Behavior
     /// </summary>
     internal abstract class BaseBehavior
     {
-        protected readonly FoodCache<Sugar> _cacheSugar = new FoodCache<Sugar>();
-        protected readonly FoodCache<Fruit> _cacheFruit = new FoodCache<Fruit>();
-        protected readonly OpponentCache<Bug> _cacheBugs = new OpponentCache<Bug>();
-        protected readonly OpponentCache<Ant> _cacheEnemyAnts = new OpponentCache<Ant>();
-        protected readonly MarkerCache _cacheMarker = new MarkerCache();
+        protected readonly MemoryCache _cache;
 
         #region Fields
 
@@ -64,6 +61,8 @@ namespace AntMe.Player.ArndtBalke.Behavior
         {
             // Save ant reference
             _ant = ant;
+
+            _cache = new MemoryCache(this);
         }
 
         #endregion
@@ -119,11 +118,7 @@ namespace AntMe.Player.ArndtBalke.Behavior
                 Anthill = Destination as Anthill;
             }
 
-            _cacheSugar.Cleanup();
-            _cacheFruit.Cleanup();
-            _cacheBugs.Cleanup();
-            _cacheEnemyAnts.Cleanup();
-            _cacheMarker.Cleanup();
+            _cache.Cleanup();
 
             if (Range - WalkedRange - Range * 0.02 < GetDistanceTo(Anthill)
                 || _ant.CurrentEnergy < _ant.MaximumEnergy * 0.15)
@@ -157,8 +152,11 @@ namespace AntMe.Player.ArndtBalke.Behavior
             GoTo(markerInfo.Coordinates);
         }
 
-        public void GoTo(RelativeCoordinate coordinate)
+        protected void GoTo(RelativeCoordinate coordinate)
         {
+            if (Anthill == null)
+                return;
+
             RelativeCoordinate ownCoordinate = GetCoordinate();
 
             if (coordinate == null || ownCoordinate == null)
@@ -184,17 +182,11 @@ namespace AntMe.Player.ArndtBalke.Behavior
 
         public RelativeCoordinate GetCoordinate(Item item)
         {
-            if (Anthill == null)
-                return null;
-
             return new RelativeCoordinate(Anthill, item);
         }
 
         public RelativeCoordinate GetCoordinate()
         {
-            if (Anthill == null)
-                return null;
-
             return new RelativeCoordinate(Anthill, _ant);
         }
 
@@ -210,7 +202,7 @@ namespace AntMe.Player.ArndtBalke.Behavior
             return GetDistanceTo(markerInfo.Coordinates);
         }
 
-        protected int GetDistanceTo(Item item)
+        public int GetDistanceTo(Item item)
         {
             return item == null ? -1 : Coordinate.GetDistanceBetween(_ant, item);
         }
@@ -224,7 +216,7 @@ namespace AntMe.Player.ArndtBalke.Behavior
             return NeedsCarrier(_ant.CarryingFruit);
         }
 
-        protected bool NeedsCarrier(Fruit fruit)
+        public bool NeedsCarrier(Fruit fruit)
         {
             return fruit != null
                 && _ant.NeedsCarrier(fruit);
@@ -248,7 +240,7 @@ namespace AntMe.Player.ArndtBalke.Behavior
         /// <param name="fruit">spotted fruit</param>
         public virtual void Spots(Fruit fruit)
         {
-            _cacheFruit.Add(fruit);
+            _cache.Add(fruit);
 
             if (NeedsCarrier(fruit))
             {
@@ -264,7 +256,7 @@ namespace AntMe.Player.ArndtBalke.Behavior
         /// <param name="sugar">spotted sugar</param>
         public virtual void Spots(Sugar sugar)
         {
-            _cacheSugar.Add(sugar);
+            _cache.Add(sugar);
 
             if (sugar.Amount > MaximumLoad * 4)
             {
@@ -311,87 +303,52 @@ namespace AntMe.Player.ArndtBalke.Behavior
 
             MarkerInformation markerInfo = new MarkerInformation(marker.Information);
 
-            //MakeMark(markerInfo);
+            if (markerInfo.HopCount < 1 && !_cache.Markers.Contains(markerInfo))
+                MakeMark(new MarkerInformation(markerInfo), 90);
 
-            if (GetCoordinate(Anthill).GetDistanceTo(markerInfo.Coordinates) > ViewRange * 0.75)
-                _cacheMarker.Add(markerInfo);
-
-            //if (IgnoreMarker(markerInfo))
-            //    return;
-
-            //switch (markerInfo.InfoType)
-            //{
-            //    case 0:
-            //        OnBugSpotted(markerInfo);
-            //        break;
-            //    case 1:
-            //        OnEnemyAntSpotted(markerInfo);
-            //        break;
-            //    case 2:
-            //        OnSugarSpotted(markerInfo);
-            //        break;
-            //    case 3:
-            //        OnFruitNeedsCarriers(markerInfo);
-            //        break;
-            //}
+            _cache.Add(markerInfo);
         }
 
-        //protected virtual bool IgnoreMarker(MarkerInformation markerInfo)
-        //{
-        //    return false;
-        //}
-
-        //protected virtual void OnBugSpotted(MarkerInformation markerInfo)
-        //{
-
-        //}
-
-        //protected virtual void OnEnemyAntSpotted(MarkerInformation markerInfo)
-        //{
-
-        //}
-
-        //protected virtual void OnSugarSpotted(MarkerInformation markerInfo)
-        //{
-
-        //}
-
-        //protected virtual void OnFruitNeedsCarriers(MarkerInformation markerInfo)
-        //{
-
-        //}
-
-        protected void MakeMark(byte infoType, RelativeCoordinate coordinate, int range)
+        protected void MakeMark(byte infoType, Item item, int range)
         {
-            _ant.MakeMark(new MarkerInformation(infoType, coordinate).Encode(), range);
+            MakeMark(new MarkerInformation(infoType, GetCoordinate(item)), range);
         }
 
-        private void MakeMark(MarkerInformation markerInfo)
+        private void MakeMark(MarkerInformation markerInfo, int range)
         {
-            if (markerInfo.HopCount < 4 && markerInfo.Coordinates != null)
-            {
-                _ant.MakeMark(new MarkerInformation(markerInfo).Encode(), 75);
-            }
+            _ant.MakeMark(markerInfo.Encode(), range);
         }
 
         protected virtual void MarkBugSpotted(Bug bug)
         {
-            MakeMark(0, GetCoordinate(bug), 75);
+            if (Anthill == null)
+                return;
+
+            MakeMark(0, bug, 75);
         }
 
         protected virtual void MarkEnemyAntSpotted(Ant ant)
         {
-            MakeMark(1, GetCoordinate(ant), 75);
+            if (Anthill == null)
+                return;
+
+            MakeMark(1, ant, 75);
         }
 
         protected virtual void MarkSugarSpotted(Sugar sugar)
         {
-            MakeMark(2, GetCoordinate(sugar), 50);
+            if (Anthill == null)
+                return;
+
+            MakeMark(2, sugar, 50);
         }
 
         protected virtual void MarkFruitNeedsCarriers(Fruit fruit)
         {
-            MakeMark(3, GetCoordinate(fruit), 200);
+            if (Anthill == null)
+                return;
+
+            MakeMark(3, fruit, 200);
         }
 
         /// <summary>
@@ -434,7 +391,7 @@ namespace AntMe.Player.ArndtBalke.Behavior
         /// <param name="ant">spotted ant</param>
         public virtual void SpotsEnemy(Ant ant)
         {
-            _cacheEnemyAnts.Add(ant);
+            _cache.Add(ant);
 
             MarkEnemyAntSpotted(ant);
         }
@@ -447,7 +404,7 @@ namespace AntMe.Player.ArndtBalke.Behavior
         /// <param name="bug">spotted bug</param>
         public virtual void SpotsEnemy(Bug bug)
         {
-            _cacheBugs.Add(bug);
+            _cache.Add(bug);
 
             MarkBugSpotted(bug);
         }

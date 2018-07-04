@@ -70,10 +70,7 @@ namespace AntMe.Player.ArndtBalke.MarkerInfo
 
             // Decode coordinates from third highest to fifth lowest bit
             int coordinates = (encoded & 0x3FFFFFF0) >> 4;
-            if (coordinates == 0)
-                Coordinates = null;
-            else
-                Coordinates = new RelativeCoordinate(GetInt32(coordinates >> 13), GetInt32(coordinates & 0x1FFF));
+            Coordinates = new RelativeCoordinate(GetInt32(coordinates >> 13), GetInt32(coordinates & 0x1FFF));
 
             // Decode hop count from two highest bits
             HopCount = (short)((encoded >> 30) & 0x3);
@@ -92,11 +89,9 @@ namespace AntMe.Player.ArndtBalke.MarkerInfo
 
             // Encode coordinate data
             int coordinates = 0;
-            if (Coordinates != null)
-            {
-                coordinates |= GetInt13(Coordinates.X) << 13;
-                coordinates |= GetInt13(Coordinates.Y) & 0x1FFF;
-            }
+
+            coordinates |= GetInt13(Coordinates.X) << 13;
+            coordinates |= GetInt13(Coordinates.Y) & 0x1FFF;
 
             // Add encoded coordinate data to third highest to fifth lowest bit
             encoded |= (coordinates << 4) & 0x7FFFFFF0;
