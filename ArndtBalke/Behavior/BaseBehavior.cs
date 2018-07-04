@@ -2,6 +2,7 @@
 using AntMe.Player.ArndtBalke.Map;
 using AntMe.Player.ArndtBalke.MarkerInfo;
 using System;
+using System.Collections.Generic;
 
 namespace AntMe.Player.ArndtBalke.Behavior
 {
@@ -10,6 +11,9 @@ namespace AntMe.Player.ArndtBalke.Behavior
     /// </summary>
     internal abstract class BaseBehavior
     {
+        protected readonly List<Sugar> _listSugar = new List<Sugar>();
+        protected readonly List<Fruit> _listFruit = new List<Fruit>();
+
         #region Fields
 
         /// <summary>
@@ -101,6 +105,18 @@ namespace AntMe.Player.ArndtBalke.Behavior
                 GoToAnthill();
 
                 Anthill = Destination as Anthill;
+            }
+
+            for (int i = 0; i < _listSugar.Count; i++)
+            {
+                if (_listSugar[i].Amount <= 0)
+                    _listSugar.RemoveAt(i);
+            }
+
+            for (int i = 0; i < _listFruit.Count; i++)
+            {
+                if (_listFruit[i].Amount <= 0)
+                    _listFruit.RemoveAt(i);
             }
         }
 
@@ -213,6 +229,9 @@ namespace AntMe.Player.ArndtBalke.Behavior
         /// <param name="fruit">spotted fruit</param>
         public virtual void Spots(Fruit fruit)
         {
+            if (!_listFruit.Contains(fruit))
+                _listFruit.Add(fruit);
+
             if (NeedsCarrier(fruit))
             {
                 MarkFruitNeedsCarriers(fruit);
@@ -227,6 +246,9 @@ namespace AntMe.Player.ArndtBalke.Behavior
         /// <param name="sugar">spotted sugar</param>
         public virtual void Spots(Sugar sugar)
         {
+            if (!_listSugar.Contains(sugar))
+                _listSugar.Add(sugar);
+
             if (sugar.Amount > MaximumLoad * 4)
             {
                 MarkSugarSpotted(sugar);

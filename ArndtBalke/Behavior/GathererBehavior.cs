@@ -10,9 +10,6 @@ namespace AntMe.Player.ArndtBalke.Behavior
     /// </summary>
     internal class GathererBehavior : BaseBehavior
     {
-        private readonly List<Sugar> _listSugar = new List<Sugar>();
-        private readonly List<Fruit> _listFruit = new List<Fruit>();
-
         #region Properties
 
         /// <summary>
@@ -63,25 +60,6 @@ namespace AntMe.Player.ArndtBalke.Behavior
         }
 
         /// <summary>
-        /// This method is called when an ant has travelled one third of its 
-        /// movement range.
-        /// Read more: "http://wiki.antme.net/en/API1:GettingTired"
-        /// </summary>
-        public override void GettingTired()
-        {
-        }
-
-        /// <summary>
-        /// This method is called if an ant dies. It informs you that the ant has 
-        /// died. The ant cannot undertake any more actions from that point forward.
-        /// Read more: "http://wiki.antme.net/en/API1:HasDied"
-        /// </summary>
-        /// <param name="kindOfDeath">Kind of Death</param>
-        public override void HasDied(KindOfDeath kindOfDeath)
-        {
-        }
-
-        /// <summary>
         /// This method is called in every simulation round, regardless of additional 
         /// conditions. It is ideal for actions that must be executed but that are not 
         /// addressed by other methods.
@@ -90,18 +68,6 @@ namespace AntMe.Player.ArndtBalke.Behavior
         public override void Tick()
         {
             base.Tick();
-
-            for (int i = 0; i < _listSugar.Count; i++)
-            {
-                if (_listSugar[i].Amount <= 0)
-                    _listSugar.RemoveAt(i);
-            }
-
-            for (int i = 0; i < _listFruit.Count; i++)
-            {
-                if (_listFruit[i].Amount <= 0)
-                    _listFruit.RemoveAt(i);
-            }
 
             if (Range - WalkedRange - Range * 0.02 < GetDistanceTo(Anthill))
             {
@@ -128,9 +94,6 @@ namespace AntMe.Player.ArndtBalke.Behavior
         {
             base.Spots(fruit);
 
-            if (!_listFruit.Contains(fruit))
-                _listFruit.Add(fruit);
-
             if (NeedsCarrier(fruit))
             {
                 MarkFruitNeedsCarriers(fruit);
@@ -152,9 +115,6 @@ namespace AntMe.Player.ArndtBalke.Behavior
         {
             base.Spots(sugar);
 
-            if (!_listSugar.Contains(sugar))
-                _listSugar.Add(sugar);
-
             if (CarryingFruit == null && CurrentLoad < MaximumLoad && Destination == null)
             {
                 if (Range - WalkedRange > GetDistanceTo(Anthill))
@@ -173,6 +133,8 @@ namespace AntMe.Player.ArndtBalke.Behavior
         /// <param name="fruit">reached fruit</param>
         public override void DestinationReached(Fruit fruit)
         {
+            base.DestinationReached(fruit);
+
             if (NeedsCarrier(fruit))
             {
                 Take(fruit);
@@ -189,6 +151,8 @@ namespace AntMe.Player.ArndtBalke.Behavior
         /// <param name="sugar">reached sugar</param>
         public override void DestinationReached(Sugar sugar)
         {
+            base.DestinationReached(sugar);
+
             Take(sugar);
             GoToAnthill();
         }
@@ -228,51 +192,9 @@ namespace AntMe.Player.ArndtBalke.Behavior
             }
         }
 
-        /// <summary>
-        /// Just as ants can see various types of food, they can also visually detect 
-        /// other game elements. This method is called if the ant sees an ant from the 
-        /// same colony.
-        /// Read more: "http://wiki.antme.net/en/API1:SpotsFriend(Ant)"
-        /// </summary>
-        /// <param name="ant">spotted ant</param>
-        public override void SpotsFriend(Ant ant)
-        {
-        }
-
-        /// <summary>
-        /// Just as ants can see various types of food, they can also visually detect 
-        /// other game elements. This method is called if the ant detects an ant from a 
-        /// friendly colony (an ant on the same team).
-        /// Read more: "http://wiki.antme.net/en/API1:SpotsTeammate(Ant)"
-        /// </summary>
-        /// <param name="ant">spotted ant</param>
-        public override void SpotsTeammate(Ant ant)
-        {
-        }
-
         #endregion
 
         #region Fight
-
-        /// <summary>
-        /// Enemy creatures may actively attack the ant. This method is called if an 
-        /// enemy ant attacks; the ant can then decide how to react.
-        /// Read more: "http://wiki.antme.net/en/API1:UnderAttack(Ant)"
-        /// </summary>
-        /// <param name="ant">attacking ant</param>
-        public override void UnderAttack(Ant ant)
-        {
-        }
-
-        /// <summary>
-        /// Enemy creatures may actively attack the ant. This method is called if a 
-        /// bug attacks; the ant can decide how to react.
-        /// Read more: "http://wiki.antme.net/en/API1:UnderAttack(Bug)"
-        /// </summary>
-        /// <param name="bug">attacking bug</param>
-        public override void UnderAttack(Bug bug)
-        {
-        }
 
         #endregion
 

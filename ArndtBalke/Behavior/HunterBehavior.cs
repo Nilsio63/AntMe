@@ -43,36 +43,6 @@ namespace AntMe.Player.ArndtBalke.Behavior
             GoForward();
         }
 
-        /// <summary>
-        /// This method is called when an ant has travelled one third of its 
-        /// movement range.
-        /// Read more: "http://wiki.antme.net/en/API1:GettingTired"
-        /// </summary>
-        public override void GettingTired()
-        {
-        }
-
-        /// <summary>
-        /// This method is called if an ant dies. It informs you that the ant has 
-        /// died. The ant cannot undertake any more actions from that point forward.
-        /// Read more: "http://wiki.antme.net/en/API1:HasDied"
-        /// </summary>
-        /// <param name="kindOfDeath">Kind of Death</param>
-        public override void HasDied(KindOfDeath kindOfDeath)
-        {
-        }
-
-        /// <summary>
-        /// This method is called in every simulation round, regardless of additional 
-        /// conditions. It is ideal for actions that must be executed but that are not 
-        /// addressed by other methods.
-        /// Read more: "http://wiki.antme.net/en/API1:Tick"
-        /// </summary>
-        public override void Tick()
-        {
-            base.Tick();
-        }
-
         #endregion
 
         #region Communication
@@ -83,28 +53,6 @@ namespace AntMe.Player.ArndtBalke.Behavior
             {
                 GoTo(markerInfo);
             }
-        }
-
-        /// <summary>
-        /// Just as ants can see various types of food, they can also visually detect 
-        /// other game elements. This method is called if the ant sees an ant from the 
-        /// same colony.
-        /// Read more: "http://wiki.antme.net/en/API1:SpotsFriend(Ant)"
-        /// </summary>
-        /// <param name="ant">spotted ant</param>
-        public override void SpotsFriend(Ant ant)
-        {
-        }
-
-        /// <summary>
-        /// Just as ants can see various types of food, they can also visually detect 
-        /// other game elements. This method is called if the ant detects an ant from a 
-        /// friendly colony (an ant on the same team).
-        /// Read more: "http://wiki.antme.net/en/API1:SpotsTeammate(Ant)"
-        /// </summary>
-        /// <param name="ant">spotted ant</param>
-        public override void SpotsTeammate(Ant ant)
-        {
         }
 
         #endregion
@@ -152,6 +100,8 @@ namespace AntMe.Player.ArndtBalke.Behavior
         /// <param name="ant">attacking ant</param>
         public override void UnderAttack(Ant ant)
         {
+            base.UnderAttack(ant);
+
             Attack(ant);
         }
 
@@ -163,6 +113,8 @@ namespace AntMe.Player.ArndtBalke.Behavior
         /// <param name="bug">attacking bug</param>
         public override void UnderAttack(Bug bug)
         {
+            base.UnderAttack(bug);
+
             Attack(bug);
         }
 
