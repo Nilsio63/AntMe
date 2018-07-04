@@ -20,6 +20,18 @@ namespace AntMe.Player.ArndtBalke.MarkerInfo
         /// The hop count of the information.
         /// </summary>
         public short HopCount { get; private set; }
+        /// <summary>
+        /// Gets the age of the information.
+        /// </summary>
+        public int Age { get; set; }
+
+        public bool IsBugSpotted => InfoType == 0;
+
+        public bool IsAntSpotted => InfoType == 1;
+
+        public bool IsSugarSpotted => InfoType == 2;
+
+        public bool IsFruitNeedsCarriers => InfoType == 3;
 
         /// <summary>
         /// Creates a new marker information instance.

@@ -5,12 +5,17 @@ namespace AntMe.Player.ArndtBalke.Cache
 {
     internal abstract class CacheBase<T> : IEnumerable<T>
     {
-        private readonly List<T> _list = new List<T>();
+        protected readonly List<T> _list = new List<T>();
 
         public void Add(T obj)
         {
-            if (!_list.Contains(obj))
+            if (!Contains(obj))
                 _list.Add(obj);
+        }
+
+        protected virtual bool Contains(T obj)
+        {
+            return _list.Contains(obj);
         }
 
         public void Cleanup()

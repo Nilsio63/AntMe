@@ -33,46 +33,88 @@ namespace AntMe.Player.ArndtBalke.Behavior
 
         #region Movement
 
-        /// <summary>
-        /// If the ant has no assigned tasks, it waits for new tasks. This method 
-        /// is called to inform you that it is waiting.
-        /// Read more: "http://wiki.antme.net/en/API1:Waiting"
-        /// </summary>
-        public override void Waiting()
+        //protected override bool IgnoreMarker(MarkerInformation markerInfo)
+        //{
+        //    if (Destination == null)
+        //    {
+        //        if (Destination is Anthill)
+        //            return true;
+        //        else if (Destination is Sugar)
+        //            return false;
+        //        else if (GetDistanceTo(Destination) < GetDistanceTo(markerInfo.Coordinates))
+        //            return true;
+        //    }
+
+        //    return false;
+        //}
+
+        protected override void DoNextMove()
         {
-            Fruit f = _cacheFruit.OrderBy(o => GetDistanceTo(o)).FirstOrDefault();
-
-            if (f != null)
-            {
-                GoTo(f);
-                return;
-            }
-
-            Sugar s = _cacheSugar.OrderBy(o => GetDistanceTo(o)).FirstOrDefault();
-
-            if (s != null)
-            {
-                GoTo(s);
-                return;
-            }
-
-            GoForward();
-        }
-
-        /// <summary>
-        /// This method is called in every simulation round, regardless of additional 
-        /// conditions. It is ideal for actions that must be executed but that are not 
-        /// addressed by other methods.
-        /// Read more: "http://wiki.antme.net/en/API1:Tick"
-        /// </summary>
-        public override void Tick()
-        {
-            base.Tick();
-
             if (NeedsCarrier())
             {
                 MarkFruitNeedsCarriers(CarryingFruit);
             }
+
+            if (Destination is Anthill
+                || CarryingFruit != null
+                || CurrentLoad > 0)
+                return;
+
+            if (DoMoveFruit())
+                return;
+
+            if (DoMoveSugar())
+                return;
+        }
+
+        protected bool DoMoveFruit()
+        {
+            Fruit nearestFruit = _cacheFruit.Where(o => NeedsCarrier(o)).OrderBy(o => GetDistanceTo(o)).FirstOrDefault();
+
+            MarkerInformation nearestFruitMarker = _cacheMarker.Where(o => o.IsFruitNeedsCarriers).OrderBy(o => GetDistanceTo(o)).FirstOrDefault();
+
+            if (nearestFruit != null
+                && (nearestFruitMarker == null || GetDistanceTo(nearestFruit) < GetDistanceTo(nearestFruitMarker)))
+            {
+                Think("Going to apple");
+
+                GoTo(nearestFruit);
+                return true;
+            }
+            else if (nearestFruitMarker != null && GetDistanceTo(nearestFruitMarker) > ViewRange)
+            {
+                Think("Going to apple marker");
+
+                GoTo(nearestFruitMarker);
+                return true;
+            }
+
+            return false;
+        }
+
+        protected bool DoMoveSugar()
+        {
+            Sugar nearestSugar = _cacheSugar.OrderBy(o => GetDistanceTo(o)).FirstOrDefault();
+
+            MarkerInformation nearestSugarMarker = _cacheMarker.Where(o => o.IsSugarSpotted).OrderBy(o => GetDistanceTo(o)).FirstOrDefault();
+
+            if (nearestSugar != null
+                && (nearestSugarMarker == null || GetDistanceTo(nearestSugar) < GetDistanceTo(nearestSugarMarker)))
+            {
+                Think("Going to sugar");
+
+                GoTo(nearestSugar);
+                return true;
+            }
+            else if (nearestSugarMarker != null && GetDistanceTo(nearestSugarMarker) > ViewRange)
+            {
+                Think("Going to sugar marker");
+
+                GoTo(nearestSugarMarker);
+                return true;
+            }
+
+            return false;
         }
 
         #endregion
@@ -156,36 +198,21 @@ namespace AntMe.Player.ArndtBalke.Behavior
 
         #region Communication
 
-        protected override bool IgnoreMarker(MarkerInformation markerInfo)
-        {
-            if (Destination == null)
-            {
-                if (Destination is Anthill)
-                    return true;
-                else if (Destination is Sugar)
-                    return false;
-                else if (GetDistanceTo(Destination) < GetDistanceTo(markerInfo.Coordinates))
-                    return true;
-            }
+        //protected override void OnSugarSpotted(MarkerInformation markerInfo)
+        //{
+        //    if (!(Destination is Sugar) && CurrentLoad < MaximumLoad)
+        //    {
+        //        GoTo(markerInfo);
+        //    }
+        //}
 
-            return false;
-        }
-
-        protected override void OnSugarSpotted(MarkerInformation markerInfo)
-        {
-            if (!(Destination is Sugar) && CurrentLoad < MaximumLoad)
-            {
-                GoTo(markerInfo);
-            }
-        }
-
-        protected override void OnFruitNeedsCarriers(MarkerInformation markerInfo)
-        {
-            if (!(Destination is Fruit) && CurrentLoad <= 0 && CarryingFruit == null)
-            {
-                GoTo(markerInfo);
-            }
-        }
+        //protected override void OnFruitNeedsCarriers(MarkerInformation markerInfo)
+        //{
+        //    if (!(Destination is Fruit) && CurrentLoad <= 0 && CarryingFruit == null)
+        //    {
+        //        GoTo(markerInfo);
+        //    }
+        //}
 
         #endregion
 

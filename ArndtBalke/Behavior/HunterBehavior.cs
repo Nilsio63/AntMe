@@ -31,27 +31,22 @@ namespace AntMe.Player.ArndtBalke.Behavior
 
         #region Movement
 
-        /// <summary>
-        /// If the ant has no assigned tasks, it waits for new tasks. This method 
-        /// is called to inform you that it is waiting.
-        /// Read more: "http://wiki.antme.net/en/API1:Waiting"
-        /// </summary>
-        public override void Waiting()
+        protected override void DoNextMove()
         {
-            GoForward();
+            throw new System.NotImplementedException();
         }
 
         #endregion
 
         #region Communication
 
-        protected override void OnEnemyAntSpotted(MarkerInformation markerInfo)
-        {
-            if (Destination == null)
-            {
-                GoTo(markerInfo);
-            }
-        }
+        //protected override void OnEnemyAntSpotted(MarkerInformation markerInfo)
+        //{
+        //    if (Destination == null)
+        //    {
+        //        GoTo(markerInfo);
+        //    }
+        //}
 
         #endregion
 
