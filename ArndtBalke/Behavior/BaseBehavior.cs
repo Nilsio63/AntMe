@@ -1,10 +1,8 @@
 ﻿using AntMe.English;
 using AntMe.Player.ArndtBalke.Cache;
 using AntMe.Player.ArndtBalke.Map;
-using AntMe.Player.ArndtBalke.MarkerInfo;
+using AntMe.Player.ArndtBalke.Markers;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace AntMe.Player.ArndtBalke.Behavior
 {
@@ -150,9 +148,9 @@ namespace AntMe.Player.ArndtBalke.Behavior
             _ant.GoToDestination(item);
         }
 
-        protected void GoTo(MarkerInformation markerInfo)
+        protected void GoTo(Signal signal)
         {
-            GoTo(markerInfo.Coordinates);
+            GoTo(signal.Coordinates);
         }
 
         protected void GoTo(RelativeCoordinate coordinate)
@@ -200,9 +198,9 @@ namespace AntMe.Player.ArndtBalke.Behavior
             return ownCoordinate != null ? ownCoordinate.GetDistanceTo(coordinate) : -1;
         }
 
-        public int GetDistanceTo(MarkerInformation markerInfo)
+        public int GetDistanceTo(Signal signal)
         {
-            return GetDistanceTo(markerInfo.Coordinates);
+            return GetDistanceTo(signal.Coordinates);
         }
 
         public int GetDistanceTo(Item item)
@@ -304,22 +302,22 @@ namespace AntMe.Player.ArndtBalke.Behavior
             if (Anthill == null)
                 return;
 
-            MarkerInformation markerInfo = new MarkerInformation(marker.Information);
+            Signal signal = new Signal(marker.Information);
 
-            if (markerInfo.HopCount < 1 && !_cache.Markers.Contains(markerInfo))
-                MakeMark(new MarkerInformation(markerInfo), 90);
+            if (signal.HopCount < 1 && !_cache.Markers.Contains(signal))
+                MakeMark(new Signal(signal), 90);
 
-            _cache.Add(markerInfo);
+            _cache.Add(signal);
         }
 
         protected void MakeMark(byte infoType, Item item, int range)
         {
-            MakeMark(new MarkerInformation(infoType, GetCoordinate(item)), range);
+            MakeMark(new Signal(infoType, GetCoordinate(item)), range);
         }
 
-        private void MakeMark(MarkerInformation markerInfo, int range)
+        private void MakeMark(Signal signal, int range)
         {
-            _ant.MakeMark(markerInfo.Encode(), range);
+            _ant.MakeMark(signal.Encode(), range);
         }
 
         protected virtual void MarkBugSpotted(Bug bug)

@@ -55,12 +55,12 @@
     <Compile Include="Cache\CacheBase.cs" />
     <Compile Include="Cache\FoodCache.cs" />
     <Compile Include="Cache\ItemCache.cs" />
-    <Compile Include="Cache\MarkerCache.cs" />
-    <Compile Include="Cache\MarkerMemoryCache.cs" />
+    <Compile Include="Cache\SignalCache.cs" />
+    <Compile Include="Cache\SignalMemoryCache.cs" />
     <Compile Include="Cache\MemoryCache.cs" />
     <Compile Include="Cache\OpponentCache.cs" />
     <Compile Include="Map\RelativeCoordinate.cs" />
-    <Compile Include="MarkerInfo\MarkerInformation.cs" />
+    <Compile Include="Markers\Signal.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ArndtBalkeClass.cs" />
   </ItemGroup>

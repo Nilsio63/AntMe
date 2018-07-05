@@ -1,12 +1,12 @@
 ﻿using AntMe.Player.ArndtBalke.Map;
 using System;
 
-namespace AntMe.Player.ArndtBalke.MarkerInfo
+namespace AntMe.Player.ArndtBalke.Markers
 {
     /// <summary>
     /// Class to hold information for markers through bitwise integer operations.
     /// </summary>
-    internal class MarkerInformation
+    internal class Signal
     {
         /// <summary>
         /// The type of information to be sent.
@@ -37,7 +37,7 @@ namespace AntMe.Player.ArndtBalke.MarkerInfo
         /// Creates a new marker information instance.
         /// </summary>
         /// <param name="infoType">The type of information to be sent.</param>
-        public MarkerInformation(byte infoType)
+        public Signal(byte infoType)
             : this(infoType, null)
         { }
 
@@ -46,24 +46,24 @@ namespace AntMe.Player.ArndtBalke.MarkerInfo
         /// </summary>
         /// <param name="infoType">The type of information to be sent.</param>
         /// <param name="coordinates">The coordinates where to find the object of interest.</param>
-        public MarkerInformation(byte infoType, RelativeCoordinate coordinates)
+        public Signal(byte infoType, RelativeCoordinate coordinates)
         {
             InfoType = infoType;
             Coordinates = coordinates;
         }
 
-        public MarkerInformation(MarkerInformation markerInfo)
+        public Signal(Signal signal)
         {
-            InfoType = markerInfo.InfoType;
-            Coordinates = markerInfo.Coordinates;
-            HopCount = (short)(markerInfo.HopCount + 1);
+            InfoType = signal.InfoType;
+            Coordinates = signal.Coordinates;
+            HopCount = (short)(signal.HopCount + 1);
         }
 
         /// <summary>
         /// Recreates a marker out of the encoded information.
         /// </summary>
         /// <param name="encoded">The encoded information integer.</param>
-        public MarkerInformation(int encoded)
+        public Signal(int encoded)
         {
             // Decode info type from lowest 4 Bits
             InfoType = (byte)(encoded & 0xF);

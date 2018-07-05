@@ -1,5 +1,5 @@
 ﻿using AntMe.English;
-using AntMe.Player.ArndtBalke.MarkerInfo;
+using AntMe.Player.ArndtBalke.Markers;
 
 namespace AntMe.Player.ArndtBalke.Cache
 {
@@ -11,7 +11,7 @@ namespace AntMe.Player.ArndtBalke.Cache
         public OpponentCache<Bug> Bugs { get; private set; }
         public OpponentCache<Ant> Ants { get; private set; }
 
-        public MarkerMemoryCache Markers { get; private set; }
+        public SignalMemoryCache Markers { get; private set; }
 
         public MemoryCache()
         {
@@ -21,7 +21,7 @@ namespace AntMe.Player.ArndtBalke.Cache
             Bugs = new OpponentCache<Bug>();
             Ants = new OpponentCache<Ant>();
 
-            Markers = new MarkerMemoryCache();
+            Markers = new SignalMemoryCache();
         }
 
         public void Add(Fruit fruit) => Fruits.Add(fruit);
@@ -30,9 +30,9 @@ namespace AntMe.Player.ArndtBalke.Cache
         public void Add(Bug bug) => Bugs.Add(bug);
         public void Add(Ant ant) => Ants.Add(ant);
 
-        public void Add(MarkerInformation markerInfo)
+        public void Add(Signal signal)
         {
-            Markers.Add(markerInfo);
+            Markers.Add(signal);
         }
 
         public override void Cleanup()

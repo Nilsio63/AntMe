@@ -1,5 +1,5 @@
 ﻿using AntMe.English;
-using AntMe.Player.ArndtBalke.MarkerInfo;
+using AntMe.Player.ArndtBalke.Markers;
 using System.Linq;
 
 namespace AntMe.Player.ArndtBalke.Behavior
@@ -53,7 +53,7 @@ namespace AntMe.Player.ArndtBalke.Behavior
         {
             Ant nearestAnt = _cache.Ants.OrderBy(GetDistanceTo).FirstOrDefault();
 
-            MarkerInformation nearestAntMarker = _cache.Markers.Ants.OrderBy(GetDistanceTo).FirstOrDefault();
+            Signal nearestAntMarker = _cache.Markers.Ants.OrderBy(GetDistanceTo).FirstOrDefault();
 
             if (nearestAnt != null
                 && (nearestAntMarker == null || GetDistanceTo(nearestAnt) < GetDistanceTo(nearestAntMarker) * 1.75))
@@ -74,7 +74,7 @@ namespace AntMe.Player.ArndtBalke.Behavior
         {
             Bug nearestBug = _cache.Bugs.OrderBy(GetDistanceTo).FirstOrDefault();
 
-            MarkerInformation nearestBugMarker = _cache.Markers.Bugs.OrderBy(GetDistanceTo).FirstOrDefault();
+            Signal nearestBugMarker = _cache.Markers.Bugs.OrderBy(GetDistanceTo).FirstOrDefault();
 
             if (nearestBug != null
                 && (nearestBugMarker == null || GetDistanceTo(nearestBug) < GetDistanceTo(nearestBugMarker) * 1.75))

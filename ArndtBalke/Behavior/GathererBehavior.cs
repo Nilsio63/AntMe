@@ -1,5 +1,5 @@
 ﻿using AntMe.English;
-using AntMe.Player.ArndtBalke.MarkerInfo;
+using AntMe.Player.ArndtBalke.Markers;
 using System.Linq;
 
 namespace AntMe.Player.ArndtBalke.Behavior
@@ -62,7 +62,7 @@ namespace AntMe.Player.ArndtBalke.Behavior
         {
             Fruit nearestFruit = _cache.Fruits.Where(NeedsCarrier).OrderBy(GetDistanceTo).FirstOrDefault();
 
-            MarkerInformation nearestFruitMarker = _cache.Markers.Fruits.OrderBy(GetDistanceTo).FirstOrDefault();
+            Signal nearestFruitMarker = _cache.Markers.Fruits.OrderBy(GetDistanceTo).FirstOrDefault();
 
             if (nearestFruit != null
                 && (nearestFruitMarker == null || GetDistanceTo(nearestFruit) < GetDistanceTo(nearestFruitMarker)))
@@ -83,7 +83,7 @@ namespace AntMe.Player.ArndtBalke.Behavior
         {
             Sugar nearestSugar = _cache.Sugar.OrderBy(GetDistanceTo).FirstOrDefault();
 
-            MarkerInformation nearestSugarMarker = _cache.Markers.Sugar.OrderBy(GetDistanceTo).FirstOrDefault();
+            Signal nearestSugarMarker = _cache.Markers.Sugar.OrderBy(GetDistanceTo).FirstOrDefault();
 
             if (nearestSugar != null
                 && (nearestSugarMarker == null || GetDistanceTo(nearestSugar) < GetDistanceTo(nearestSugarMarker)))
