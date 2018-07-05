@@ -38,6 +38,13 @@ namespace AntMe.Player.ArndtBalke.Behavior
             {
                 MarkFruitNeedsCarriers(CarryingFruit);
             }
+            //else if (CurrentLoad >= 0)
+            //{
+            //    Sugar sugar = _cache.Sugar.GetNearest();
+
+            //    if (sugar != null)
+            //        MarkSugarSpotted(sugar);
+            //}
 
             if (Destination is Anthill
                 || CarryingFruit != null
@@ -53,9 +60,9 @@ namespace AntMe.Player.ArndtBalke.Behavior
 
         private bool DoMoveFruit()
         {
-            Fruit nearestFruit = _cache.Fruits.GetNearest();
+            Fruit nearestFruit = _cache.Fruits.Where(NeedsCarrier).OrderBy(GetDistanceTo).FirstOrDefault();
 
-            MarkerInformation nearestFruitMarker = _cache.Markers.Fruits.GetNearest();
+            MarkerInformation nearestFruitMarker = _cache.Markers.Fruits.OrderBy(GetDistanceTo).FirstOrDefault();
 
             if (nearestFruit != null
                 && (nearestFruitMarker == null || GetDistanceTo(nearestFruit) < GetDistanceTo(nearestFruitMarker)))
@@ -74,9 +81,9 @@ namespace AntMe.Player.ArndtBalke.Behavior
 
         private bool DoMoveSugar()
         {
-            Sugar nearestSugar = _cache.Sugar.GetNearest();
+            Sugar nearestSugar = _cache.Sugar.OrderBy(GetDistanceTo).FirstOrDefault();
 
-            MarkerInformation nearestSugarMarker = _cache.Markers.Sugar.GetNearest();
+            MarkerInformation nearestSugarMarker = _cache.Markers.Sugar.OrderBy(GetDistanceTo).FirstOrDefault();
 
             if (nearestSugar != null
                 && (nearestSugarMarker == null || GetDistanceTo(nearestSugar) < GetDistanceTo(nearestSugarMarker)))

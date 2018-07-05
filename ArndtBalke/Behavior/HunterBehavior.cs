@@ -1,5 +1,6 @@
 ﻿using AntMe.English;
 using AntMe.Player.ArndtBalke.MarkerInfo;
+using System.Linq;
 
 namespace AntMe.Player.ArndtBalke.Behavior
 {
@@ -50,12 +51,12 @@ namespace AntMe.Player.ArndtBalke.Behavior
 
         private bool DoMoveOpponentAnt()
         {
-            Ant nearestAnt = _cache.Ants.GetNearest();
+            Ant nearestAnt = _cache.Ants.OrderBy(GetDistanceTo).FirstOrDefault();
 
-            MarkerInformation nearestAntMarker = _cache.Markers.Ants.GetNearest();
+            MarkerInformation nearestAntMarker = _cache.Markers.Ants.OrderBy(GetDistanceTo).FirstOrDefault();
 
             if (nearestAnt != null
-                && (nearestAntMarker == null || GetDistanceTo(nearestAnt) < GetDistanceTo(nearestAntMarker) * 1.25))
+                && (nearestAntMarker == null || GetDistanceTo(nearestAnt) < GetDistanceTo(nearestAntMarker) * 1.75))
             {
                 Attack(nearestAnt);
                 return true;
@@ -71,12 +72,12 @@ namespace AntMe.Player.ArndtBalke.Behavior
 
         private bool DoMoveBugs()
         {
-            Bug nearestBug = _cache.Bugs.GetNearest();
+            Bug nearestBug = _cache.Bugs.OrderBy(GetDistanceTo).FirstOrDefault();
 
-            MarkerInformation nearestBugMarker = _cache.Markers.Bugs.GetNearest();
+            MarkerInformation nearestBugMarker = _cache.Markers.Bugs.OrderBy(GetDistanceTo).FirstOrDefault();
 
             if (nearestBug != null
-                && (nearestBugMarker == null || GetDistanceTo(nearestBug) < GetDistanceTo(nearestBugMarker) * 1.25))
+                && (nearestBugMarker == null || GetDistanceTo(nearestBug) < GetDistanceTo(nearestBugMarker) * 1.75))
             {
                 Attack(nearestBug);
                 return true;

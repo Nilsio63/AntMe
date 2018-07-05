@@ -1,5 +1,4 @@
-﻿using AntMe.Player.ArndtBalke.Behavior;
-using AntMe.Player.ArndtBalke.MarkerInfo;
+﻿using AntMe.Player.ArndtBalke.MarkerInfo;
 
 namespace AntMe.Player.ArndtBalke.Cache
 {
@@ -11,14 +10,13 @@ namespace AntMe.Player.ArndtBalke.Cache
         public MarkerCache Bugs { get; private set; }
         public MarkerCache Ants { get; private set; }
 
-        public MarkerMemoryCache(BaseBehavior ant)
-            : base(ant)
+        public MarkerMemoryCache()
         {
-            Fruits = new MarkerCache(ant);
-            Sugar = new MarkerCache(ant);
+            Fruits = new MarkerCache();
+            Sugar = new MarkerCache();
 
-            Bugs = new MarkerCache(ant);
-            Ants = new MarkerCache(ant);
+            Bugs = new MarkerCache();
+            Ants = new MarkerCache();
         }
 
         public void Add(MarkerInformation markerInfo)

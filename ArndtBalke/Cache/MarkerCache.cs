@@ -5,10 +5,6 @@ namespace AntMe.Player.ArndtBalke.Cache
 {
     internal class MarkerCache : CacheBase<MarkerInformation>
     {
-        public MarkerCache(BaseBehavior ant)
-            : base(ant)
-        { }
-
         public override void Add(MarkerInformation obj)
         {
             _list.Add(obj);
@@ -29,11 +25,6 @@ namespace AntMe.Player.ArndtBalke.Cache
             return false;
         }
 
-        protected override int GetDistanceToAnt(MarkerInformation obj)
-        {
-            return (int)(_ant.GetDistanceTo(obj) * (1 + (double)obj.Age / 4));
-        }
-
         public override void Cleanup()
         {
             foreach (MarkerInformation markerInfo in _list)
@@ -51,7 +42,7 @@ namespace AntMe.Player.ArndtBalke.Cache
                 if (markerInfo != obj
                     && markerInfo.Age <= obj.Age
                     && markerInfo.InfoType == obj.InfoType
-                    && markerInfo.Coordinates.GetDistanceTo(obj.Coordinates) < 50)
+                    && markerInfo.Coordinates.GetDistanceTo(obj.Coordinates) < 70)
                     return true;
             }
 

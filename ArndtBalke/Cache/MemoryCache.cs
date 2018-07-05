@@ -1,12 +1,11 @@
 ﻿using AntMe.English;
-using AntMe.Player.ArndtBalke.Behavior;
 using AntMe.Player.ArndtBalke.MarkerInfo;
 
 namespace AntMe.Player.ArndtBalke.Cache
 {
     internal class MemoryCache : CacheBase
     {
-        public FruitCache Fruits { get; private set; }
+        public FoodCache<Fruit> Fruits { get; private set; }
         public FoodCache<Sugar> Sugar { get; private set; }
 
         public OpponentCache<Bug> Bugs { get; private set; }
@@ -14,16 +13,15 @@ namespace AntMe.Player.ArndtBalke.Cache
 
         public MarkerMemoryCache Markers { get; private set; }
 
-        public MemoryCache(BaseBehavior ant)
-            : base(ant)
+        public MemoryCache()
         {
-            Fruits = new FruitCache(ant);
-            Sugar = new FoodCache<Sugar>(ant);
+            Fruits = new FoodCache<Fruit>();
+            Sugar = new FoodCache<Sugar>();
 
-            Bugs = new OpponentCache<Bug>(ant);
-            Ants = new OpponentCache<Ant>(ant);
+            Bugs = new OpponentCache<Bug>();
+            Ants = new OpponentCache<Ant>();
 
-            Markers = new MarkerMemoryCache(ant);
+            Markers = new MarkerMemoryCache();
         }
 
         public void Add(Fruit fruit) => Fruits.Add(fruit);

@@ -1,18 +1,10 @@
-﻿using AntMe.Player.ArndtBalke.Behavior;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 
 namespace AntMe.Player.ArndtBalke.Cache
 {
     internal abstract class CacheBase
     {
-        protected readonly BaseBehavior _ant;
-
-        protected CacheBase(BaseBehavior ant)
-        {
-            _ant = ant;
-        }
-
         public abstract void Cleanup();
 
     }
@@ -22,35 +14,11 @@ namespace AntMe.Player.ArndtBalke.Cache
     {
         protected readonly List<T> _list = new List<T>();
 
-        protected CacheBase(BaseBehavior ant)
-            : base(ant)
-        { }
-
         public virtual void Add(T obj)
         {
             if (!Contains(obj))
                 _list.Add(obj);
         }
-
-        public T GetNearest()
-        {
-            T nearest = null;
-
-            foreach (T item in _list)
-            {
-                if (IsValid(item) && (nearest == null || GetDistanceToAnt(item) < GetDistanceToAnt(nearest)))
-                    nearest = item;
-            }
-
-            return nearest;
-        }
-
-        protected virtual bool IsValid(T obj)
-        {
-            return true;
-        }
-
-        protected abstract int GetDistanceToAnt(T obj);
 
         public virtual bool Contains(T obj)
         {

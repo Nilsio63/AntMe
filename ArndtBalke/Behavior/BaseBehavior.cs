@@ -62,7 +62,7 @@ namespace AntMe.Player.ArndtBalke.Behavior
             // Save ant reference
             _ant = ant;
 
-            _cache = new MemoryCache(this);
+            _cache = new MemoryCache();
         }
 
         #endregion
@@ -139,7 +139,10 @@ namespace AntMe.Player.ArndtBalke.Behavior
 
         protected void GoToAnthill()
         {
-            _ant.GoToAnthill();
+            if (Anthill == null)
+                _ant.GoToAnthill();
+            else
+                GoTo(Anthill);
         }
 
         protected void GoTo(Item item)
@@ -303,7 +306,7 @@ namespace AntMe.Player.ArndtBalke.Behavior
 
             MarkerInformation markerInfo = new MarkerInformation(marker.Information);
 
-            if (markerInfo.HopCount < 2 && !_cache.Markers.Contains(markerInfo))
+            if (markerInfo.HopCount < 1 && !_cache.Markers.Contains(markerInfo))
                 MakeMark(new MarkerInformation(markerInfo), 90);
 
             _cache.Add(markerInfo);
