@@ -1,4 +1,5 @@
 ﻿using AntMe.English;
+using AntMe.Player.ArndtBalke.Map;
 using AntMe.Player.ArndtBalke.Markers;
 using System.Linq;
 
@@ -32,33 +33,23 @@ namespace AntMe.Player.ArndtBalke.Behavior
 
         #region Movement
 
-        protected override void DoNextMove()
+        protected override Target GetNextTarget()
         {
-            if (NeedsCarrier())
-            {
-                MarkFruitNeedsCarriers(CarryingFruit);
-            }
-            //else if (CurrentLoad >= 0)
-            //{
-            //    Sugar sugar = _cache.Sugar.GetNearest();
+            Target nextTarget = base.GetNextTarget();
 
-            //    if (sugar != null)
-            //        MarkSugarSpotted(sugar);
-            //}
+            if (nextTarget != null)
+                return nextTarget;
 
             if (Destination is Anthill
                 || CarryingFruit != null
                 || CurrentLoad > 0)
-                return;
+                return null;
 
-            if (DoMoveFruit())
-                return;
-
-            if (DoMoveSugar())
-                return;
+            return GetTargetFruit()
+                ?? GetTargetSugar();
         }
 
-        private bool DoMoveFruit()
+        private Target GetTargetFruit()
         {
             Fruit nearestFruit = _cache.Fruits.Where(NeedsCarrier).OrderBy(GetDistanceTo).FirstOrDefault();
 
@@ -67,19 +58,17 @@ namespace AntMe.Player.ArndtBalke.Behavior
             if (nearestFruit != null
                 && (nearestFruitMarker == null || GetDistanceTo(nearestFruit) < GetDistanceTo(nearestFruitMarker)))
             {
-                GoTo(nearestFruit);
-                return true;
+                return new Target(nearestFruit);
             }
             else if (nearestFruitMarker != null && GetDistanceTo(nearestFruitMarker) > ViewRange)
             {
-                GoTo(nearestFruitMarker);
-                return true;
+                return new Target(nearestFruitMarker);
             }
 
-            return false;
+            return null;
         }
 
-        private bool DoMoveSugar()
+        private Target GetTargetSugar()
         {
             Sugar nearestSugar = _cache.Sugar.OrderBy(GetDistanceTo).FirstOrDefault();
 
@@ -88,61 +77,32 @@ namespace AntMe.Player.ArndtBalke.Behavior
             if (nearestSugar != null
                 && (nearestSugarMarker == null || GetDistanceTo(nearestSugar) < GetDistanceTo(nearestSugarMarker)))
             {
-                GoTo(nearestSugar);
-                return true;
+                return new Target(nearestSugar);
             }
             else if (nearestSugarMarker != null && GetDistanceTo(nearestSugarMarker) > ViewRange)
             {
-                GoTo(nearestSugarMarker);
-                return true;
+                return new Target(nearestSugarMarker);
             }
 
-            return false;
+            return null;
+        }
+
+        protected override Signal GetNextSignal()
+        {
+            Signal nextSignal = base.GetNextSignal();
+
+            if (nextSignal != null)
+                return nextSignal;
+
+            if (NeedsCarrier())
+                return new Signal(FruitNeedsCarriers, GetCoordinate(CarryingFruit));
+
+            return null;
         }
 
         #endregion
 
         #region Food
-
-        /// <summary>
-        /// This method is called as soon as an ant sees an apple within its 360° 
-        /// visual range. The parameter is the piece of fruit that the ant has spotted.
-        /// Read more: "http://wiki.antme.net/en/API1:Spots(Fruit)"
-        /// </summary>
-        /// <param name="fruit">spotted fruit</param>
-        public override void Spots(Fruit fruit)
-        {
-            base.Spots(fruit);
-
-            if (NeedsCarrier(fruit))
-            {
-                MarkFruitNeedsCarriers(fruit);
-
-                if (Destination == null || Destination is Sugar || Destination is Marker)
-                {
-                    GoTo(fruit);
-                }
-            }
-        }
-
-        /// <summary>
-        /// This method is called as soon as an ant sees a mound of sugar in its 360° 
-        /// visual range. The parameter is the mound of sugar that the ant has spotted.
-        /// Read more: "http://wiki.antme.net/en/API1:Spots(Sugar)"
-        /// </summary>
-        /// <param name="sugar">spotted sugar</param>
-        public override void Spots(Sugar sugar)
-        {
-            base.Spots(sugar);
-
-            if (CarryingFruit == null && CurrentLoad < MaximumLoad && Destination == null)
-            {
-                if (Range - WalkedRange > GetDistanceTo(Anthill))
-                {
-                    GoTo(sugar);
-                }
-            }
-        }
 
         /// <summary>
         /// If the ant’s destination is a piece of fruit, this method is called as soon 

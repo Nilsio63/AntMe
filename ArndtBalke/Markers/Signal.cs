@@ -32,15 +32,7 @@ namespace AntMe.Player.ArndtBalke.Markers
         public bool IsSugarSpotted => InfoType == 2;
 
         public bool IsFruitNeedsCarriers => InfoType == 3;
-
-        /// <summary>
-        /// Creates a new marker information instance.
-        /// </summary>
-        /// <param name="infoType">The type of information to be sent.</param>
-        public Signal(byte infoType)
-            : this(infoType, null)
-        { }
-
+        
         /// <summary>
         /// Creates a new marker information instance.
         /// </summary>

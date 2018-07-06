@@ -1,4 +1,5 @@
 ﻿using AntMe.English;
+using AntMe.Player.ArndtBalke.Map;
 using AntMe.Player.ArndtBalke.Markers;
 using System.Linq;
 
@@ -32,24 +33,16 @@ namespace AntMe.Player.ArndtBalke.Behavior
 
         #region Movement
 
-        protected override void DoNextMove()
+        protected override Target GetNextTarget()
         {
             if (Destination is Anthill)
-                return;
+                return null;
 
-            if (Destination is Ant a)
-                MarkEnemyAntSpotted(a);
-            else if (Destination is Bug b)
-                MarkBugSpotted(b);
-
-            if (DoMoveOpponentAnt())
-                return;
-
-            if (DoMoveBugs())
-                return;
+            return GetNextOpponentAnt()
+                ?? GetNextBugs();
         }
 
-        private bool DoMoveOpponentAnt()
+        private Target GetNextOpponentAnt()
         {
             Ant nearestAnt = _cache.Ants.OrderBy(GetDistanceTo).FirstOrDefault();
 
@@ -58,19 +51,17 @@ namespace AntMe.Player.ArndtBalke.Behavior
             if (nearestAnt != null
                 && (nearestAntMarker == null || GetDistanceTo(nearestAnt) < GetDistanceTo(nearestAntMarker) * 1.75))
             {
-                Attack(nearestAnt);
-                return true;
+                return new Target(nearestAnt);
             }
             else if (nearestAntMarker != null && GetDistanceTo(nearestAntMarker) > ViewRange)
             {
-                GoTo(nearestAntMarker);
-                return true;
+                return new Target(nearestAntMarker);
             }
 
-            return false;
+            return null;
         }
 
-        private bool DoMoveBugs()
+        private Target GetNextBugs()
         {
             Bug nearestBug = _cache.Bugs.OrderBy(GetDistanceTo).FirstOrDefault();
 
@@ -79,16 +70,29 @@ namespace AntMe.Player.ArndtBalke.Behavior
             if (nearestBug != null
                 && (nearestBugMarker == null || GetDistanceTo(nearestBug) < GetDistanceTo(nearestBugMarker) * 1.75))
             {
-                Attack(nearestBug);
-                return true;
+                return new Target(nearestBug);
             }
             else if (nearestBugMarker != null && GetDistanceTo(nearestBugMarker) > ViewRange)
             {
-                GoTo(nearestBugMarker);
-                return true;
+                return new Target(nearestBugMarker);
             }
 
-            return false;
+            return null;
+        }
+
+        protected override Signal GetNextSignal()
+        {
+            Signal nextSignal = base.GetNextSignal();
+
+            if (nextSignal != null)
+                return nextSignal;
+
+            if (Destination is Ant a)
+                return new Signal(AntSpotted, GetCoordinate(a));
+            else if (Destination is Bug b)
+                return new Signal(BugSpotted, GetCoordinate(b));
+
+            return null;
         }
 
         #endregion
