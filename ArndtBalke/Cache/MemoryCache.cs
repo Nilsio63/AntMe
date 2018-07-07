@@ -11,7 +11,7 @@ namespace AntMe.Player.ArndtBalke.Cache
         public OpponentCache<Bug> Bugs { get; private set; }
         public OpponentCache<Ant> Ants { get; private set; }
 
-        public SignalMemoryCache Markers { get; private set; }
+        public SignalCache Markers { get; private set; }
 
         public MemoryCache()
         {
@@ -21,7 +21,7 @@ namespace AntMe.Player.ArndtBalke.Cache
             Bugs = new OpponentCache<Bug>();
             Ants = new OpponentCache<Ant>();
 
-            Markers = new SignalMemoryCache();
+            Markers = new SignalCache();
         }
 
         public void Add(Fruit fruit) => Fruits.Add(fruit);

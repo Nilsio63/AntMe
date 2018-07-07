@@ -38,15 +38,26 @@ namespace AntMe.Player.ArndtBalke.Behavior
             if (Destination is Anthill)
                 return null;
 
-            return GetNextOpponentAnt()
+            return GetNextFruitProtection()
+                ?? GetNextOpponentAnt()
                 ?? GetNextBugs();
+        }
+
+        private Target GetNextFruitProtection()
+        {
+            Signal nearestFruitMarker = _cache.Markers.FromType(FruitNeedsProtection).OrderBy(GetDistanceTo).FirstOrDefault();
+
+            if (nearestFruitMarker != null && GetDistanceTo(nearestFruitMarker) > ViewRange)
+                return new Target(nearestFruitMarker);
+
+            return null;
         }
 
         private Target GetNextOpponentAnt()
         {
             Ant nearestAnt = _cache.Ants.OrderBy(GetDistanceTo).FirstOrDefault();
 
-            Signal nearestAntMarker = _cache.Markers.Ants.OrderBy(GetDistanceTo).FirstOrDefault();
+            Signal nearestAntMarker = _cache.Markers.FromType(AntSpotted).OrderBy(GetDistanceTo).FirstOrDefault();
 
             if (nearestAnt != null
                 && (nearestAntMarker == null || GetDistanceTo(nearestAnt) < GetDistanceTo(nearestAntMarker) * 1.75))
@@ -65,7 +76,7 @@ namespace AntMe.Player.ArndtBalke.Behavior
         {
             Bug nearestBug = _cache.Bugs.OrderBy(GetDistanceTo).FirstOrDefault();
 
-            Signal nearestBugMarker = _cache.Markers.Bugs.OrderBy(GetDistanceTo).FirstOrDefault();
+            Signal nearestBugMarker = _cache.Markers.FromType(BugSpotted).OrderBy(GetDistanceTo).FirstOrDefault();
 
             if (nearestBug != null
                 && (nearestBugMarker == null || GetDistanceTo(nearestBug) < GetDistanceTo(nearestBugMarker) * 1.75))

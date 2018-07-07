@@ -56,7 +56,6 @@
     <Compile Include="Cache\FoodCache.cs" />
     <Compile Include="Cache\ItemCache.cs" />
     <Compile Include="Cache\SignalCache.cs" />
-    <Compile Include="Cache\SignalMemoryCache.cs" />
     <Compile Include="Cache\MemoryCache.cs" />
     <Compile Include="Cache\OpponentCache.cs" />
     <Compile Include="Map\RelativeCoordinate.cs" />

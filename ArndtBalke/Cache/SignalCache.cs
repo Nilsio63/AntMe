@@ -1,9 +1,19 @@
 ﻿using AntMe.Player.ArndtBalke.Markers;
+using System.Collections.Generic;
 
 namespace AntMe.Player.ArndtBalke.Cache
 {
     internal class SignalCache : CacheBase<Signal>
     {
+        public IEnumerable<Signal> FromType(short infoType)
+        {
+            foreach (Signal signal in _list)
+            {
+                if (signal.InfoType == infoType)
+                    yield return signal;
+            }
+        }
+
         public override void Add(Signal obj)
         {
             _list.Add(obj);

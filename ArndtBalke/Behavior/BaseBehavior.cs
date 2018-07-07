@@ -3,6 +3,7 @@ using AntMe.Player.ArndtBalke.Cache;
 using AntMe.Player.ArndtBalke.Map;
 using AntMe.Player.ArndtBalke.Markers;
 using System;
+using System.Linq;
 
 namespace AntMe.Player.ArndtBalke.Behavior
 {
@@ -37,6 +38,7 @@ namespace AntMe.Player.ArndtBalke.Behavior
         protected byte AntSpotted => 1;
         protected byte SugarSpotted => 2;
         protected byte FruitNeedsCarriers => 3;
+        protected byte FruitNeedsProtection => 4;
 
         protected int Range => _ant.Range;
 
@@ -153,10 +155,8 @@ namespace AntMe.Player.ArndtBalke.Behavior
 
             if (nextSignal != null)
             {
-                MakeMark(nextSignal);
+                EmitSignal(nextSignal);
             }
-
-            //DoNextMove();
         }
 
         protected virtual Target GetNextTarget()
@@ -172,10 +172,16 @@ namespace AntMe.Player.ArndtBalke.Behavior
 
         protected virtual Signal GetNextSignal()
         {
+            Fruit nearestFruit = _cache.Fruits.Where(InViewRange).OrderBy(GetDistanceTo).FirstOrDefault();
+
+            if (nearestFruit != null)
+            {
+                if (_ant.ForeignAntsInViewrange > 2)
+                    return new Signal(FruitNeedsProtection, GetCoordinate(nearestFruit));
+            }
+
             return null;
         }
-
-        //protected abstract void DoNextMove();
 
         protected void GoForward()
         {
@@ -263,7 +269,7 @@ namespace AntMe.Player.ArndtBalke.Behavior
 
         protected int GetDistanceTo(Item item)
         {
-            return item == null ? -1 : Coordinate.GetDistanceBetween(_ant, item);
+            return Coordinate.GetDistanceBetween(_ant, item);
         }
 
         protected int GetDistanceTo(Signal signal)
@@ -273,9 +279,12 @@ namespace AntMe.Player.ArndtBalke.Behavior
 
         protected int GetDistanceTo(RelativeCoordinate coordinate)
         {
-            RelativeCoordinate ownCoordinate = GetCoordinate();
+            return GetCoordinate().GetDistanceTo(coordinate);
+        }
 
-            return ownCoordinate != null ? ownCoordinate.GetDistanceTo(coordinate) : -1;
+        protected bool InViewRange(Item item)
+        {
+            return GetDistanceTo(item) <= ViewRange;
         }
 
         #endregion
@@ -318,7 +327,7 @@ namespace AntMe.Player.ArndtBalke.Behavior
 
             if (NeedsCarrier(fruit))
             {
-                MarkFruitNeedsCarriers(fruit);
+                EmitSignal(FruitNeedsCarriers, fruit);
             }
         }
 
@@ -335,9 +344,9 @@ namespace AntMe.Player.ArndtBalke.Behavior
             if (!initialized)
                 return;
 
-            if (sugar.Amount > MaximumLoad * 4)
+            if (sugar.Amount > MaximumLoad * 8)
             {
-                MarkSugarSpotted(sugar);
+                EmitSignal(SugarSpotted, sugar);
             }
         }
 
@@ -381,65 +390,29 @@ namespace AntMe.Player.ArndtBalke.Behavior
             Signal signal = new Signal(marker.Information);
 
             if (signal.HopCount < 1 && !_cache.Markers.Contains(signal))
-                MakeMark(new Signal(signal), 90);
+                EmitSignal(new Signal(signal));
 
             _cache.Add(signal);
         }
 
-        protected void MakeMark(byte infoType, Item item, int range)
+        protected void EmitSignal(byte infoType, Item item)
         {
-            MakeMark(new Signal(infoType, GetCoordinate(item)));
+            EmitSignal(new Signal(infoType, GetCoordinate(item)));
         }
 
-        private void MakeMark(Signal signal, int range)
-        {
-            _ant.MakeMark(signal.Encode(), range);
-        }
-
-        private void MakeMark(Signal signal)
+        private void EmitSignal(Signal signal)
         {
             int range;
 
             if (signal.InfoType == SugarSpotted)
                 range = 50;
-            else if (signal.InfoType == FruitNeedsCarriers)
+            else if (signal.InfoType == FruitNeedsCarriers
+                || signal.InfoType == FruitNeedsProtection)
                 range = 200;
             else
                 range = 75;
 
             _ant.MakeMark(signal.Encode(), range);
-        }
-
-        protected virtual void MarkBugSpotted(Bug bug)
-        {
-            if (Anthill == null)
-                return;
-
-            MakeMark(0, bug, 75);
-        }
-
-        protected virtual void MarkEnemyAntSpotted(Ant ant)
-        {
-            if (Anthill == null)
-                return;
-
-            MakeMark(1, ant, 75);
-        }
-
-        protected virtual void MarkSugarSpotted(Sugar sugar)
-        {
-            if (Anthill == null)
-                return;
-
-            MakeMark(2, sugar, 50);
-        }
-
-        protected virtual void MarkFruitNeedsCarriers(Fruit fruit)
-        {
-            if (Anthill == null)
-                return;
-
-            MakeMark(3, fruit, 200);
         }
 
         /// <summary>
@@ -490,7 +463,8 @@ namespace AntMe.Player.ArndtBalke.Behavior
             if (!initialized)
                 return;
 
-            MarkEnemyAntSpotted(ant);
+            if (ant.CarriedFruit != null && ant.CurrentLoad > 0)
+                EmitSignal(AntSpotted, ant);
         }
 
         /// <summary>
@@ -506,7 +480,7 @@ namespace AntMe.Player.ArndtBalke.Behavior
             if (!initialized)
                 return;
 
-            MarkBugSpotted(bug);
+            EmitSignal(BugSpotted, bug);
         }
 
         /// <summary>

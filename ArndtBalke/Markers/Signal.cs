@@ -32,6 +32,8 @@ namespace AntMe.Player.ArndtBalke.Markers
         public bool IsSugarSpotted => InfoType == 2;
 
         public bool IsFruitNeedsCarriers => InfoType == 3;
+
+        public bool IsFruitNeedsProtection => InfoType == 4;
         
         /// <summary>
         /// Creates a new marker information instance.
