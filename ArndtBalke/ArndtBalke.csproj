@@ -50,17 +50,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Behavior\BaseBehavior.cs" />
-    <Compile Include="Behavior\CommanderBehavior.cs" />
     <Compile Include="Behavior\GathererBehavior.cs" />
     <Compile Include="Behavior\HunterBehavior.cs" />
-    <Compile Include="Behavior\ScoutBehavior.cs" />
     <Compile Include="Cache\CacheBase.cs" />
     <Compile Include="Cache\FoodCache.cs" />
     <Compile Include="Cache\ItemCache.cs" />
     <Compile Include="Cache\SignalCache.cs" />
     <Compile Include="Cache\MemoryCache.cs" />
     <Compile Include="Cache\OpponentCache.cs" />
-    <Compile Include="Map\AttackPoint.cs" />
     <Compile Include="Map\RelativeCoordinate.cs" />
     <Compile Include="Map\Target.cs" />
     <Compile Include="Markers\Signal.cs" />

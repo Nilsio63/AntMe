@@ -6,7 +6,7 @@ namespace AntMe.Player.ArndtBalke.Map
     internal class Target
     {
         public Item Item { get; private set; }
-        public RelativeCoordinate Coordinates { get; private set; }
+        public Signal Signal { get; private set; }
 
         public Target(Item item)
         {
@@ -14,12 +14,8 @@ namespace AntMe.Player.ArndtBalke.Map
         }
 
         public Target(Signal signal)
-            : this(signal.Coordinates)
-        { }
-
-        public Target(RelativeCoordinate coordinate)
         {
-            Coordinates = coordinate;
+            Signal = signal;
         }
 
     }

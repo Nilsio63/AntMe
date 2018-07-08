@@ -1,7 +1,6 @@
 ﻿using AntMe.English;
 using AntMe.Player.ArndtBalke.Map;
 using AntMe.Player.ArndtBalke.Markers;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace AntMe.Player.ArndtBalke.Behavior
@@ -11,12 +10,6 @@ namespace AntMe.Player.ArndtBalke.Behavior
     /// </summary>
     internal class HunterBehavior : BaseBehavior
     {
-        #region Fields
-
-        private AttackPoint currentAttackPoint = null;
-
-        #endregion
-
         #region Properties
 
         /// <summary>
@@ -42,51 +35,17 @@ namespace AntMe.Player.ArndtBalke.Behavior
 
         protected override Target GetNextTarget()
         {
-            Target nextTarget = base.GetNextTarget();
-
-            if (nextTarget != null)
-                return nextTarget;
-
-            if (currentAttackPoint != null)
-            {
-                currentAttackPoint.Age++;
-
-                if (currentAttackPoint.Age > 55)
-                    currentAttackPoint = null;
-            }
-
             if (Destination is Anthill)
                 return null;
 
-            return GetNextAttackPoint()
-                ?? GetNextFruitProtection()
+            return GetNextFruitProtection()
                 ?? GetNextOpponentAnt()
                 ?? GetNextBugs();
         }
 
-        private Target GetNextAttackPoint()
-        {
-            if (currentAttackPoint != null)
-            {
-                if (Destination is null && GetDistanceTo(currentAttackPoint) > 175)
-                {
-                    return new Target(currentAttackPoint);
-                }
-            }
-            else
-            {
-                Signal nearestAttackPoint = _cache.Signals.FromType(AttackPoint).OrderBy(GetDistanceTo).FirstOrDefault();
-
-                if (nearestAttackPoint != null)
-                    return new Target(nearestAttackPoint);
-            }
-
-            return null;
-        }
-
         private Target GetNextFruitProtection()
         {
-            Signal nearestFruitMarker = _cache.Signals.FromType(FruitNeedsProtection).OrderBy(GetDistanceTo).FirstOrDefault();
+            Signal nearestFruitMarker = _cache.Markers.FromType(FruitNeedsProtection).OrderBy(GetDistanceTo).FirstOrDefault();
 
             if (nearestFruitMarker != null && GetDistanceTo(nearestFruitMarker) > ViewRange)
                 return new Target(nearestFruitMarker);
@@ -96,21 +55,9 @@ namespace AntMe.Player.ArndtBalke.Behavior
 
         private Target GetNextOpponentAnt()
         {
-            List<Ant> listAnts = _cache.Ants.OrderBy(GetDistanceTo).ToList();
+            Ant nearestAnt = _cache.Ants.OrderBy(GetDistanceTo).FirstOrDefault();
 
-            Ant nearestAnt = null;
-
-            foreach (Ant ant in listAnts)
-            {
-                if (ant.CarriedFruit != null
-                    || ant.CurrentLoad > 0)
-                {
-                    nearestAnt = null;
-                    break;
-                }
-            }
-
-            Signal nearestAntMarker = _cache.Signals.FromType(AntSpotted).OrderBy(GetDistanceTo).FirstOrDefault();
+            Signal nearestAntMarker = _cache.Markers.FromType(AntSpotted).OrderBy(GetDistanceTo).FirstOrDefault();
 
             if (nearestAnt != null
                 && (nearestAntMarker == null || GetDistanceTo(nearestAnt) < GetDistanceTo(nearestAntMarker) * 1.75))
@@ -129,7 +76,7 @@ namespace AntMe.Player.ArndtBalke.Behavior
         {
             Bug nearestBug = _cache.Bugs.OrderBy(GetDistanceTo).FirstOrDefault();
 
-            Signal nearestBugMarker = _cache.Signals.FromType(BugSpotted).OrderBy(GetDistanceTo).FirstOrDefault();
+            Signal nearestBugMarker = _cache.Markers.FromType(BugSpotted).OrderBy(GetDistanceTo).FirstOrDefault();
 
             if (nearestBug != null
                 && (nearestBugMarker == null || GetDistanceTo(nearestBug) < GetDistanceTo(nearestBugMarker) * 1.75))
