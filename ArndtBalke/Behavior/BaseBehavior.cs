@@ -392,7 +392,7 @@ namespace AntMe.Player.ArndtBalke.Behavior
 
             Signal signal = new Signal(marker.Information);
 
-            if (signal.HopCount < 1 && !_cache.Markers.Contains(signal))
+            if (signal.HopCount < 1 && !_cache.Signals.Contains(signal))
                 EmitSignal(new Signal(signal));
 
             _cache.Add(signal);
