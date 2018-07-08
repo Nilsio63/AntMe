@@ -39,6 +39,7 @@ namespace AntMe.Player.ArndtBalke.Behavior
         protected byte SugarSpotted => 2;
         protected byte FruitNeedsCarriers => 3;
         protected byte FruitNeedsProtection => 4;
+        protected byte AttackPoint => 5;
 
         protected int Range => _ant.Range;
 
@@ -389,7 +390,7 @@ namespace AntMe.Player.ArndtBalke.Behavior
 
             Signal signal = new Signal(marker.Information);
 
-            if (signal.HopCount < 1 && !_cache.Markers.Contains(signal))
+            if (signal.HopCount < 1 && !_cache.Signals.Contains(signal))
                 EmitSignal(new Signal(signal));
 
             _cache.Add(signal);
@@ -409,6 +410,8 @@ namespace AntMe.Player.ArndtBalke.Behavior
             else if (signal.InfoType == FruitNeedsCarriers
                 || signal.InfoType == FruitNeedsProtection)
                 range = 200;
+            else if (signal.InfoType == AttackPoint)
+                range = 250;
             else
                 range = 75;
 
@@ -463,7 +466,7 @@ namespace AntMe.Player.ArndtBalke.Behavior
             if (!initialized)
                 return;
 
-            if (ant.CarriedFruit != null && ant.CurrentLoad > 0)
+            if (ant.CarriedFruit != null || ant.CurrentLoad > 0)
                 EmitSignal(AntSpotted, ant);
         }
 

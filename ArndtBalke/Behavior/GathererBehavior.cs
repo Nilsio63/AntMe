@@ -53,7 +53,7 @@ namespace AntMe.Player.ArndtBalke.Behavior
         {
             Fruit nearestFruit = _cache.Fruits.Where(NeedsCarrier).OrderBy(GetDistanceTo).FirstOrDefault();
 
-            Signal nearestFruitMarker = _cache.Markers.FromType(FruitNeedsCarriers).OrderBy(GetDistanceTo).FirstOrDefault();
+            Signal nearestFruitMarker = _cache.Signals.FromType(FruitNeedsCarriers).OrderBy(GetDistanceTo).FirstOrDefault();
 
             if (nearestFruit != null
                 && (nearestFruitMarker == null || GetDistanceTo(nearestFruit) < GetDistanceTo(nearestFruitMarker)))
@@ -72,7 +72,7 @@ namespace AntMe.Player.ArndtBalke.Behavior
         {
             Sugar nearestSugar = _cache.Sugar.OrderBy(GetDistanceTo).FirstOrDefault();
 
-            Signal nearestSugarMarker = _cache.Markers.FromType(SugarSpotted).OrderBy(GetDistanceTo).FirstOrDefault();
+            Signal nearestSugarMarker = _cache.Signals.FromType(SugarSpotted).OrderBy(GetDistanceTo).FirstOrDefault();
 
             if (nearestSugar != null
                 && (nearestSugarMarker == null || GetDistanceTo(nearestSugar) < GetDistanceTo(nearestSugarMarker)))

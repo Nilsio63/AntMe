@@ -29,6 +29,16 @@ namespace AntMe.Player.ArndtBalke
         SpeedModifier = -1,
         ViewRangeModifier = -1
     )]
+    [Caste(
+        Name = "Commander",
+        AttackModifier = 0,
+        EnergyModifier = 1,
+        LoadModifier = -1,
+        RangeModifier = 0,
+        RotationSpeedModifier = -1,
+        SpeedModifier = -1,
+        ViewRangeModifier = 2
+    )]
     public class ArndtBalkeClass : BaseAnt
     {
         #region Fields
@@ -52,10 +62,15 @@ namespace AntMe.Player.ArndtBalke
         public override string ChooseCaste(Dictionary<string, int> typeCount)
         {
             // Check caste counts
-            if (typeCount["Hunter"] < typeCount["Gatherer"])
+            if (typeCount["Hunter"] * 1.5 < typeCount["Gatherer"])
             {
                 // Create hunter behavior
                 behavior = new HunterBehavior(this);
+            }
+            else if (typeCount["Commander"] * 10 < (typeCount["Hunter"] - 10))
+            {
+                // Create commander behavior
+                behavior = new CommanderBehavior(this);
             }
             else
             {

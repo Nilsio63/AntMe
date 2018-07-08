@@ -55,9 +55,6 @@ namespace AntMe.Player.ArndtBalke.Map
 
         public int GetDistanceTo(RelativeCoordinate coordinate)
         {
-            if (coordinate == null)
-                return -1;
-
             int x = X - coordinate.X;
             int y = Y - coordinate.Y;
 
