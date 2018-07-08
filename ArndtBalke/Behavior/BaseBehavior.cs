@@ -204,7 +204,7 @@ namespace AntMe.Player.ArndtBalke.Behavior
                     GoTo(target.Item);
             }
             else
-                GoTo(target.Signal);
+                GoTo(target.Coordinates);
         }
 
         protected void GoTo(Item item)
@@ -265,7 +265,7 @@ namespace AntMe.Player.ArndtBalke.Behavior
             if (target.Item != null)
                 return GetDistanceTo(target.Item);
             else
-                return GetDistanceTo(target.Signal);
+                return GetDistanceTo(target.Coordinates);
         }
 
         protected int GetDistanceTo(Item item)

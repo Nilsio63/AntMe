@@ -10,6 +10,12 @@ namespace AntMe.Player.ArndtBalke.Behavior
     /// </summary>
     internal class HunterBehavior : BaseBehavior
     {
+        #region Fields
+
+        private AttackPoint currentAttackPoint = null;
+
+        #endregion
+
         #region Properties
 
         /// <summary>
@@ -40,12 +46,41 @@ namespace AntMe.Player.ArndtBalke.Behavior
             if (nextTarget != null)
                 return nextTarget;
 
+            if (currentAttackPoint != null)
+            {
+                currentAttackPoint.Age++;
+
+                if (currentAttackPoint.Age > 55)
+                    currentAttackPoint = null;
+            }
+
             if (Destination is Anthill)
                 return null;
 
-            return GetNextFruitProtection()
+            return GetNextAttackPoint()
+                ?? GetNextFruitProtection()
                 ?? GetNextOpponentAnt()
                 ?? GetNextBugs();
+        }
+
+        private Target GetNextAttackPoint()
+        {
+            if (currentAttackPoint != null)
+            {
+                if (GetDistanceTo(currentAttackPoint) > 100)
+                {
+                    return new Target(currentAttackPoint);
+                }
+            }
+            else
+            {
+                Signal nearestAttackPoint = _cache.Signals.FromType(AttackPoint).OrderBy(GetDistanceTo).FirstOrDefault();
+
+                if (nearestAttackPoint != null)
+                    return new Target(nearestAttackPoint);
+            }
+
+            return null;
         }
 
         private Target GetNextFruitProtection()

@@ -30,7 +30,7 @@ namespace AntMe.Player.ArndtBalke.Behavior
                 currentAttackPoint.Age++;
 
             if (currentAttackPoint == null
-                || currentAttackPoint.IsDeprecated)
+                || currentAttackPoint.Age > 60)
             {
                 currentAttackPoint = GetNextAttackPoint();
 

@@ -5,8 +5,6 @@
         public int Age { get; set; }
         public int Priority { get; set; }
 
-        public bool IsDeprecated => Age > 60;
-
         public AttackPoint(RelativeCoordinate coordinate, int priority)
             : this(coordinate.X, coordinate.Y)
         {
