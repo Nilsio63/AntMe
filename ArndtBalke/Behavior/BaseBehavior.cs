@@ -191,6 +191,9 @@ namespace AntMe.Player.ArndtBalke.Behavior
 
         protected void GoToAnthill()
         {
+            if (Anthill == null)
+                return;
+
             GoTo(Anthill);
         }
 

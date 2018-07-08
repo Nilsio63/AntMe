@@ -53,14 +53,22 @@ namespace AntMe.Player.ArndtBalke.Map
             Y = (int)y;
         }
 
+        public int GetDistanceToAnthill()
+        {
+            return GetDistance(X, Y);
+        }
+
         public int GetDistanceTo(RelativeCoordinate coordinate)
         {
             int x = X - coordinate.X;
             int y = Y - coordinate.Y;
 
-            double distance = Math.Sqrt(Math.Pow(x, 2) + Math.Pow(y, 2));
+            return GetDistance(x, y);
+        }
 
-            return (int)distance;
+        private int GetDistance(int deltaX, int deltaY)
+        {
+            return (int)Math.Sqrt(Math.Pow(deltaX, 2) + Math.Pow(deltaY, 2));
         }
 
     }

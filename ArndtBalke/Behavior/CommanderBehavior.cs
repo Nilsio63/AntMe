@@ -48,6 +48,12 @@ namespace AntMe.Player.ArndtBalke.Behavior
         {
             List<AttackPoint> listAttackPoints = GetAttackPoints();
 
+            for (int i = 0; i < listAttackPoints.Count; i++)
+            {
+                if (listAttackPoints[i].GetDistanceToAnthill() < 150)
+                    listAttackPoints.RemoveAt(i--);
+            }
+
             if (!listAttackPoints.Any())
                 return null;
 

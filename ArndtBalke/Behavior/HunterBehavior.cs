@@ -1,6 +1,7 @@
 ﻿using AntMe.English;
 using AntMe.Player.ArndtBalke.Map;
 using AntMe.Player.ArndtBalke.Markers;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace AntMe.Player.ArndtBalke.Behavior
@@ -67,7 +68,7 @@ namespace AntMe.Player.ArndtBalke.Behavior
         {
             if (currentAttackPoint != null)
             {
-                if (GetDistanceTo(currentAttackPoint) > 100)
+                if (Destination is null && GetDistanceTo(currentAttackPoint) > 175)
                 {
                     return new Target(currentAttackPoint);
                 }
@@ -95,7 +96,19 @@ namespace AntMe.Player.ArndtBalke.Behavior
 
         private Target GetNextOpponentAnt()
         {
-            Ant nearestAnt = _cache.Ants.OrderBy(GetDistanceTo).FirstOrDefault();
+            List<Ant> listAnts = _cache.Ants.OrderBy(GetDistanceTo).ToList();
+
+            Ant nearestAnt = null;
+
+            foreach (Ant ant in listAnts)
+            {
+                if (ant.CarriedFruit != null
+                    || ant.CurrentLoad > 0)
+                {
+                    nearestAnt = null;
+                    break;
+                }
+            }
 
             Signal nearestAntMarker = _cache.Signals.FromType(AntSpotted).OrderBy(GetDistanceTo).FirstOrDefault();
 
