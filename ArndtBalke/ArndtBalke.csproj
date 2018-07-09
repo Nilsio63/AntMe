@@ -54,7 +54,6 @@
     <Compile Include="Behavior\HunterBehavior.cs" />
     <Compile Include="Cache\CacheBase.cs" />
     <Compile Include="Cache\FoodCache.cs" />
-    <Compile Include="Cache\ItemCache.cs" />
     <Compile Include="Cache\SignalCache.cs" />
     <Compile Include="Cache\MemoryCache.cs" />
     <Compile Include="Cache\OpponentCache.cs" />
