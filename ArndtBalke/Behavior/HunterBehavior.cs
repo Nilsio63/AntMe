@@ -33,82 +33,116 @@ namespace AntMe.Player.ArndtBalke.Behavior
 
         #region Movement
 
+        /// <summary>
+        /// Function to calculate the next target on each tick.
+        /// </summary>
+        /// <returns>Returns the next target or null.</returns>
         protected override Target GetNextTarget()
         {
+            // Do nothing if target is anthill
             if (Destination is Anthill)
                 return null;
 
+            // Get target for fruit, ant or bug
             return GetNextFruitProtection()
                 ?? GetNextOpponentAnt()
-                ?? GetNextBugs();
+                ?? GetNextBug();
         }
 
+        /// <summary>
+        /// Function to calculate the next target for fruit protection.
+        /// </summary>
+        /// <returns>Returns the calculated fruit protection target.</returns>
         private Target GetNextFruitProtection()
         {
-            Signal nearestFruitMarker = _cache.Signals.FromType(FruitNeedsProtection).OrderBy(GetDistanceTo).FirstOrDefault();
+            // Get nearest signal for 'fruit needs protection'
+            Signal nearestFruitSignal = _cache.Signals.FromType(FruitNeedsProtection).OrderBy(GetDistanceTo).FirstOrDefault();
 
-            if (nearestFruitMarker != null && GetDistanceTo(nearestFruitMarker) > ViewRange)
-                return new Target(nearestFruitMarker);
+            // Return target for signal if signal not already in view range
+            if (nearestFruitSignal != null && GetDistanceTo(nearestFruitSignal) > ViewRange)
+                return new Target(nearestFruitSignal);
 
+            // Return no target
             return null;
         }
 
+        /// <summary>
+        /// Function to calculate the next ant target.
+        /// </summary>
+        /// <returns>Returns the calculated ant target.</returns>
         private Target GetNextOpponentAnt()
         {
+            // Get nearest ant
             Ant nearestAnt = _cache.Ants.OrderBy(GetDistanceTo).FirstOrDefault();
 
-            Signal nearestAntMarker = _cache.Signals.FromType(AntSpotted).OrderBy(GetDistanceTo).FirstOrDefault();
-
+            // Get nearest ant signal
+            Signal nearestAntSignal = _cache.Signals.FromType(AntSpotted).OrderBy(GetDistanceTo).FirstOrDefault();
+            
             if (nearestAnt != null
-                && (nearestAntMarker == null || GetDistanceTo(nearestAnt) < GetDistanceTo(nearestAntMarker) * 1.75))
+                && (nearestAntSignal == null || GetDistanceTo(nearestAnt) < GetDistanceTo(nearestAntSignal) * 2.5))
             {
+                // Return ant as target if it's closer than distance to signal times 2.5
                 return new Target(nearestAnt);
             }
-            else if (nearestAntMarker != null && GetDistanceTo(nearestAntMarker) > ViewRange)
+            else if (nearestAntSignal != null && GetDistanceTo(nearestAntSignal) > ViewRange)
             {
-                return new Target(nearestAntMarker);
+                // Return signal as target if it's not yet in view range
+                return new Target(nearestAntSignal);
             }
 
+            // Return no target
             return null;
         }
 
-        private Target GetNextBugs()
+        /// <summary>
+        /// Function to calculate the next bug target.
+        /// </summary>
+        /// <returns>Returns the calculated bug target.</returns>
+        private Target GetNextBug()
         {
+            // Get nearest bug
             Bug nearestBug = _cache.Bugs.OrderBy(GetDistanceTo).FirstOrDefault();
 
-            Signal nearestBugMarker = _cache.Signals.FromType(BugSpotted).OrderBy(GetDistanceTo).FirstOrDefault();
+            // Get nearest bug signal
+            Signal nearestBugSignal = _cache.Signals.FromType(BugSpotted).OrderBy(GetDistanceTo).FirstOrDefault();
 
             if (nearestBug != null
-                && (nearestBugMarker == null || GetDistanceTo(nearestBug) < GetDistanceTo(nearestBugMarker) * 1.75))
+                && (nearestBugSignal == null || GetDistanceTo(nearestBug) < GetDistanceTo(nearestBugSignal) * 2.5))
             {
+                // Return bug as target if it's closer than distance to signal times 2.5
                 return new Target(nearestBug);
             }
-            else if (nearestBugMarker != null && GetDistanceTo(nearestBugMarker) > ViewRange)
+            else if (nearestBugSignal != null && GetDistanceTo(nearestBugSignal) > ViewRange)
             {
-                return new Target(nearestBugMarker);
+                // Return signal as target if it's not yet in view range
+                return new Target(nearestBugSignal);
             }
 
+            // Return no target
             return null;
         }
 
+        /// <summary>
+        /// Function to calculate the next signal on each tick.
+        /// </summary>
+        /// <returns>Returns the next signal or null.</returns>
         protected override Signal GetNextSignal()
         {
+            // Call base function
             Signal nextSignal = base.GetNextSignal();
 
             if (nextSignal != null)
                 return nextSignal;
 
+            // Create signal for current destination
             if (Destination is Ant a)
                 return new Signal(AntSpotted, GetCoordinate(a));
             else if (Destination is Bug b)
                 return new Signal(BugSpotted, GetCoordinate(b));
 
+            // Return no signal
             return null;
         }
-
-        #endregion
-
-        #region Communication
 
         #endregion
 
@@ -122,8 +156,7 @@ namespace AntMe.Player.ArndtBalke.Behavior
         /// <param name="ant">attacking ant</param>
         public override void UnderAttack(Ant ant)
         {
-            base.UnderAttack(ant);
-
+            // Attack ant
             Attack(ant);
         }
 
@@ -135,8 +168,7 @@ namespace AntMe.Player.ArndtBalke.Behavior
         /// <param name="bug">attacking bug</param>
         public override void UnderAttack(Bug bug)
         {
-            base.UnderAttack(bug);
-
+            // Attack bug
             Attack(bug);
         }
 

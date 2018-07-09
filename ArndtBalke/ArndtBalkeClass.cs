@@ -63,12 +63,6 @@ namespace AntMe.Player.ArndtBalke
                 behavior = new GathererBehavior(this);
             }
 
-            //// Create hunter behavior
-            //behavior = new HunterBehavior(this);
-
-            //// Create gatherer behavior
-            //behavior = new GathererBehavior(this);
-
             // Return Caste of behavior
             return behavior.Caste;
         }

@@ -33,70 +33,102 @@ namespace AntMe.Player.ArndtBalke.Behavior
 
         #region Movement
 
+        /// <summary>
+        /// Function to calculate the next target on each tick.
+        /// </summary>
+        /// <returns>Returns the next target or null.</returns>
         protected override Target GetNextTarget()
         {
+            // Call base function
             Target nextTarget = base.GetNextTarget();
 
             if (nextTarget != null)
                 return nextTarget;
 
+            // Do nothing if target is anthill or ant is carrying something
             if (Destination is Anthill
                 || CarryingFruit != null
                 || CurrentLoad > 0)
                 return null;
 
+            // Get target for fruit or for sugar if fruit not known
             return GetTargetFruit()
                 ?? GetTargetSugar();
         }
 
+        /// <summary>
+        /// Function to calculate the next fruit target.
+        /// </summary>
+        /// <returns>Returns the calculated fruit target.</returns>
         private Target GetTargetFruit()
         {
+            // Get nearest fruit that needs carriers
             Fruit nearestFruit = _cache.Fruits.Where(NeedsCarrier).OrderBy(GetDistanceTo).FirstOrDefault();
 
-            Signal nearestFruitMarker = _cache.Signals.FromType(FruitNeedsCarriers).OrderBy(GetDistanceTo).FirstOrDefault();
-
+            // Get nearest signal for 'fruit needs carriers'
+            Signal nearestFruitSignal = _cache.Signals.FromType(FruitNeedsCarriers).OrderBy(GetDistanceTo).FirstOrDefault();
+            
             if (nearestFruit != null
-                && (nearestFruitMarker == null || GetDistanceTo(nearestFruit) < GetDistanceTo(nearestFruitMarker)))
+                && (nearestFruitSignal == null || GetDistanceTo(nearestFruit) < GetDistanceTo(nearestFruitSignal)))
             {
+                // Return fruit as target if it's closer than signal
                 return new Target(nearestFruit);
             }
-            else if (nearestFruitMarker != null && GetDistanceTo(nearestFruitMarker) > ViewRange)
+            else if (nearestFruitSignal != null && GetDistanceTo(nearestFruitSignal) > ViewRange)
             {
-                return new Target(nearestFruitMarker);
+                // Return signal as target if it's not yet in view range
+                return new Target(nearestFruitSignal);
             }
 
+            // Return no target
             return null;
         }
 
+        /// <summary>
+        /// Function to calculate the next sugar target.
+        /// </summary>
+        /// <returns>Returns the calculated sugar target.</returns>
         private Target GetTargetSugar()
         {
+            // Get nearest sugar
             Sugar nearestSugar = _cache.Sugar.OrderBy(GetDistanceTo).FirstOrDefault();
 
-            Signal nearestSugarMarker = _cache.Signals.FromType(SugarSpotted).OrderBy(GetDistanceTo).FirstOrDefault();
+            // Get nearest signal for 'sugar spotted'
+            Signal nearestSugarSignal = _cache.Signals.FromType(SugarSpotted).OrderBy(GetDistanceTo).FirstOrDefault();
 
             if (nearestSugar != null
-                && (nearestSugarMarker == null || GetDistanceTo(nearestSugar) < GetDistanceTo(nearestSugarMarker)))
+                && (nearestSugarSignal == null || GetDistanceTo(nearestSugar) < GetDistanceTo(nearestSugarSignal)))
             {
+                // Return sugar as target if it's closer than signal
                 return new Target(nearestSugar);
             }
-            else if (nearestSugarMarker != null && GetDistanceTo(nearestSugarMarker) > ViewRange)
+            else if (nearestSugarSignal != null && GetDistanceTo(nearestSugarSignal) > ViewRange)
             {
-                return new Target(nearestSugarMarker);
+                // Return signal as target if it's not yet in view range
+                return new Target(nearestSugarSignal);
             }
 
+            // Return no target
             return null;
         }
 
+        /// <summary>
+        /// Function to calculate the next signal on each tick.
+        /// </summary>
+        /// <returns>Returns the next signal or null.</returns>
         protected override Signal GetNextSignal()
         {
+            // Call base function
             Signal nextSignal = base.GetNextSignal();
 
             if (nextSignal != null)
                 return nextSignal;
 
+            // Return signal for fruit if it needs carriers
             if (NeedsCarrier())
                 return new Signal(FruitNeedsCarriers, GetCoordinate(CarryingFruit));
 
+            // Return no target
             return null;
         }
 
@@ -113,8 +145,7 @@ namespace AntMe.Player.ArndtBalke.Behavior
         /// <param name="fruit">reached fruit</param>
         public override void DestinationReached(Fruit fruit)
         {
-            base.DestinationReached(fruit);
-
+            // Take fruit and return to anthill if it needs carriers
             if (NeedsCarrier(fruit))
             {
                 Take(fruit);
@@ -131,33 +162,49 @@ namespace AntMe.Player.ArndtBalke.Behavior
         /// <param name="sugar">reached sugar</param>
         public override void DestinationReached(Sugar sugar)
         {
-            base.DestinationReached(sugar);
-
+            // Take sugar and return to anthill
             Take(sugar);
             GoToAnthill();
         }
 
         #endregion
 
-        #region Communication
-
-        #endregion
-
         #region Fight
 
+        /// <summary>
+        /// Enemy creatures may actively attack the ant. This method is called if an 
+        /// enemy ant attacks; the ant can then decide how to react.
+        /// Read more: "http://wiki.antme.net/en/API1:UnderAttack(Ant)"
+        /// </summary>
+        /// <param name="ant">attacking ant</param>
         public override void UnderAttack(Ant ant)
         {
-            if (CarryingFruit != null || CurrentLoad > 0)
-                Drop();
-
-            GoToAnthill();
+            // Escape to anthill
+            EscapeToAnthill();
         }
 
+        /// <summary>
+        /// Enemy creatures may actively attack the ant. This method is called if a 
+        /// bug attacks; the ant can decide how to react.
+        /// Read more: "http://wiki.antme.net/en/API1:UnderAttack(Bug)"
+        /// </summary>
+        /// <param name="bug">attacking bug</param>
         public override void UnderAttack(Bug bug)
         {
+            // Escape to anthill
+            EscapeToAnthill();
+        }
+
+        /// <summary>
+        /// Method to let the ant escape to it's anthill.
+        /// </summary>
+        private void EscapeToAnthill()
+        {
+            // Drop current load if present
             if (CarryingFruit != null || CurrentLoad > 0)
                 Drop();
 
+            // Escape to anthill
             GoToAnthill();
         }
 
