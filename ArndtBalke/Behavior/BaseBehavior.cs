@@ -221,7 +221,7 @@ namespace AntMe.Player.ArndtBalke.Behavior
         {
             // Search nearest fruit in view range
             Fruit nearestFruit = _cache.Fruits.Where(InViewRange).OrderBy(GetDistanceTo).FirstOrDefault();
-            
+
             if (nearestFruit != null)
             {
                 // Create protection request signal if hostile ants are in view range

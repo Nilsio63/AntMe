@@ -67,7 +67,7 @@ namespace AntMe.Player.ArndtBalke.Behavior
 
             // Get nearest signal for 'fruit needs carriers'
             Signal nearestFruitSignal = _cache.Signals.FromType(FruitNeedsCarriers).OrderBy(GetDistanceTo).FirstOrDefault();
-            
+
             if (nearestFruit != null
                 && (nearestFruitSignal == null || GetDistanceTo(nearestFruit) < GetDistanceTo(nearestFruitSignal)))
             {

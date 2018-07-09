@@ -25,16 +25,27 @@ namespace AntMe.Player.ArndtBalke.Markers
         /// </summary>
         public int Age { get; set; }
 
+        /// <summary>
+        /// Gets where the signal's info type is 'bug spotted'.
+        /// </summary>
         public bool IsBugSpotted => InfoType == 0;
-
+        /// <summary>
+        /// Gets where the signal's info type is 'ant spotted'.
+        /// </summary>
         public bool IsAntSpotted => InfoType == 1;
-
+        /// <summary>
+        /// Gets where the signal's info type is 'sugar spotted'.
+        /// </summary>
         public bool IsSugarSpotted => InfoType == 2;
-
+        /// <summary>
+        /// Gets where the signal's info type is 'fruit needs carriers'.
+        /// </summary>
         public bool IsFruitNeedsCarriers => InfoType == 3;
-
+        /// <summary>
+        /// Gets where the signal's info type is 'fruit needs protection'.
+        /// </summary>
         public bool IsFruitNeedsProtection => InfoType == 4;
-        
+
         /// <summary>
         /// Creates a new marker information instance.
         /// </summary>
@@ -42,12 +53,18 @@ namespace AntMe.Player.ArndtBalke.Markers
         /// <param name="coordinates">The coordinates where to find the object of interest.</param>
         public Signal(byte infoType, RelativeCoordinate coordinates)
         {
+            // Save type and coordinates
             InfoType = infoType;
             Coordinates = coordinates;
         }
 
+        /// <summary>
+        /// Creates a new marker information instance.
+        /// </summary>
+        /// <param name="signal">The signal to re-emit.</param>
         public Signal(Signal signal)
         {
+            // Save type, coordinates and hop count + 1
             InfoType = signal.InfoType;
             Coordinates = signal.Coordinates;
             HopCount = (short)(signal.HopCount + 1);
@@ -96,23 +113,36 @@ namespace AntMe.Player.ArndtBalke.Markers
             return encoded;
         }
 
+        /// <summary>
+        /// Converts an int32 to a custom int13.
+        /// </summary>
+        /// <param name="int32">The int32 to be encoded.</param>
+        /// <returns>Returns the int13 object.</returns>
         private int GetInt13(int int32)
         {
+            // Mask absolute value to get lowest 12 bits
             int res = Math.Abs(int32) & 0xFFF;
 
+            // Add a 1 on 13th bit when negative
             if (int32 < 0)
-            {
                 res |= 1 << 12;
-            }
 
             return res;
         }
 
+        /// <summary>
+        /// Converts a custom int13 back to an int32.
+        /// </summary>
+        /// <param name="int13">The int13 to be decoded.</param>
+        /// <returns>Returns the int32 object.</returns>
         private int GetInt32(int int13)
         {
+            // Mask lowest 12 bit
             int value = int13 & 0xFFF;
+            // Get 13th bit as sign
             int sign = int13 >> 12;
 
+            // Turn value when sign is set
             if (sign == 1)
                 value = -value;
 

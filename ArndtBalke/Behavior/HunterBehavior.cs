@@ -77,7 +77,7 @@ namespace AntMe.Player.ArndtBalke.Behavior
 
             // Get nearest ant signal
             Signal nearestAntSignal = _cache.Signals.FromType(AntSpotted).OrderBy(GetDistanceTo).FirstOrDefault();
-            
+
             if (nearestAnt != null
                 && (nearestAntSignal == null || GetDistanceTo(nearestAnt) < GetDistanceTo(nearestAntSignal) * 2.5))
             {
